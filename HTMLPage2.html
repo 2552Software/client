@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>The Party is HERE</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.6.4/build/ol.js"></script>
+</head>
+<body>
+    <div id="mapDIV" class="map"></div>
+    <script>
+        const WhiteBear = [93.0081, 45.0854]; // note api has it long/lat
+        console.info('white bear ', WhiteBear);
+        var map = new ol.Map({
+            target: 'mapDIV',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.XYZ({
+                        url: "C:/projects/mbutil/theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png"
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: [-10353766.72, 5634778.75],
+                zoom: 14
+            })
+        });
+        function CenterMap(loc) {
+            console.log("loc", loc);
+            map.getView().setCenter(ol.proj.transform(WhiteBear, 'EPSG:4326', 'EPSG:3857'));
+            map.getView().setZoom(14);
+        }
+        CenterMap(WhiteBear);
+        map.on('center', function (ev) {
+            console.info('change:center', ev);
+        });
+    </script>
+</body>
+</html>

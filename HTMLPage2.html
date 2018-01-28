@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <!-- utf-8 required -->
+    <meta charset="utf-8">
     <title>The Party is HERE</title>
     <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
     <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
@@ -9,16 +11,90 @@
     <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="./vector3d.js"></script>
+    <script src="./dms.js"></script>
+    <script src="./latlon-vectors.js"></script>
+    <style>
+
+        .rotate-north {
+            top: 65px;
+            left: .5em;
+        }
+
+        .ol-touch .rotate-north {
+            top: 80px;
+        }
+    </style>
 </head>
 <body>
     <div id="mapDIV" class="map"></div>
+    <div id="info" style="display: none;"></div>
+    <label for="track">
+        track position
+        <input id="track" type="checkbox" />
+    </label>
+    <p>
+        position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
+        altitude : <code id="altitude"></code>&nbsp;&nbsp;
+        altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
+        heading : <code id="heading"></code>&nbsp;&nbsp;
+        speed : <code id="speed"></code>
+    </p>
+    <select id="units">
+        <option value="degrees">degrees</option>
+        <option value="imperial">imperial inch</option>
+        <option value="us">us inch</option>
+        <option value="nautical">nautical mile</option>
+        <option value="metric" selected>metric</option>
+    </select>
     <script>
+        window.app = {};
+        const app = window.app;
+        /**
+         * @constructor
+         * @extends {ol.control.Control}
+         * @param {Object=} opt_options Control options.
+         */
+        app.RotateNorthControl = function (opt_options) {
 
+            const options = opt_options || {};
+
+            const button = document.createElement('button');
+            button.innerHTML = 'N';
+
+            const this_ = this;
+            const handleRotateNorth = function () {
+                this_.getMap().getView().setRotation(0);
+            };
+
+            button.addEventListener('click', handleRotateNorth, false);
+            button.addEventListener('touchstart', handleRotateNorth, false);
+
+            const element = document.createElement('div');
+            element.className = 'rotate-north ol-unselectable ol-control';
+            element.appendChild(button);
+
+            ol.control.Control.call(this, {
+                element: element,
+                target: options.target
+            });
+
+        };
+        ol.inherits(app.RotateNorthControl, ol.control.Control);
         // translater http://epsg.io/transform#s_srs=4326&t_srs=3857&x=-93.0094689&y=45.0841489
         const WhiteBear = [-93.0094688, 45.08414884]; // note api has it long/lat
+        const scaleLineControl = new ol.control.ScaleLine();
+
+        var p1 = new LatLon(45.08414884, -93.0094688);
+        var p2 = p1.destinationPoint(1, 45.0); // will need to convert coords
+        //var p2 = p1.destinationPoint(7794, 300.7); // 51.5135°N, 000.0983°W
+        console.info('p1 p2', p1, p2);
+
+
         var CurrentLoc = WhiteBear; // expect a long list
         console.info('loc ', CurrentLoc);
         const rome = new ol.Feature({
+            // just a demo
             geometry: new ol.geom.Point(ol.proj.fromLonLat([12.5, 41.9]))
         });
         var vectorSource = new ol.source.Vector({});
@@ -26,21 +102,51 @@
         var vectorLayer = new ol.layer.Vector({
             source: vectorSource
         });
+        var VL = new ol.layer.Vector({
+            title: 'added Layer',
+            source: new ol.source.Vector({
+                url: 'C:\maps\large.geojson',
+                format: new ol.format.GeoJSON()
+            })
+        })
         const view = new ol.View({
             center: ol.proj.fromLonLat(CurrentLoc),
-            zoom: 14
+            zoom: 15,
+            rotation: 1
         });
+        // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too
+        function destination(lat, lng, dist, heading) {
+            lat *= Math.PI / 180;
+            lng *= Math.PI / 180;
+            heading *= Math.PI / 180;
+
+            var lat2 = Math.asin(Math.sin(lat) * Math.cos(dist) +
+                Math.cos(lat) * Math.sin(dist) * Math.cos(heading));
+            return [180 / Math.PI * lat2, 180 / Math.PI * (lng + Math.atan2(Math.sin(heading) * Math.sin(dist) * Math.cos(lat2), Math.cos(dist) - Math.sin(lat) * Math.sin(lat2)))];
+        }
+
         var map = new ol.Map({
             target: 'mapDIV',
+            controls: ol.control.defaults({
+                attributionOptions: {
+                    collapsible: false
+                }
+            }).extend([
+                new app.RotateNorthControl(),
+                scaleLineControl
+            ]),
             layers: [
                 new ol.layer.Tile({
                     source: new ol.source.XYZ({
-                        url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
+                    //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
+                    url: '/maps/Tiles/{z}/{x}/{y}.png'
                     })
                 })
             ],
             view: view
         });
+
+
         const geolocation = new ol.Geolocation({
             // enableHighAccuracy must be set to true to have the heading value.
             trackingOptions: {
@@ -49,9 +155,29 @@
             tracking: true,
             projection: view.getProjection()
         });
+        function el(id) {
+            return document.getElementById(id);
+        }
+
+        el('track').addEventListener('change', function () {
+            console.info('track change ');
+            geolocation.setTracking(this.checked);
+        });
+        // update the HTML page when the position changes.
+        geolocation.on('change', function () {
+            console.info('geo change');
+            el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+            el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+            el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+            el('heading').innerText = geolocation.getHeading() + ' [rad]';
+            el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
+        });
         // handle geolocation error.
-        geolocation.on('error', function (err) {
-            console.info('error ', err);
+        geolocation.on('error', function (error) {
+            console.info('error ', error);
+            const info = document.getElementById('info');
+            info.innerHTML = error.message;
+            info.style.display = '';
         });
         geolocation.on('change', function (evt) {
             //save position and set map center
@@ -67,15 +193,20 @@
             //add icon to vector source
             vectorSource.addFeature(iconFeature);
         });
+        const accuracyFeature = new ol.Feature();
+        geolocation.on('change:accuracyGeometry', function () {
+            console.info('change:accuracyGeometry');
+            accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+        });
         const positionFeature = new ol.Feature();
         positionFeature.setStyle(new ol.style.Style({
             image: new ol.style.Circle({
                 radius: 6,
                 fill: new ol.style.Fill({
-                    color: '#3399CC'
+                    color: 'rgba(255,0,0,0.8)'
                 }),
                 stroke: new ol.style.Stroke({
-                    color: '#fff',
+                    color: 'rgba(0,255,0,0.8)',
                     width: 2
                 })
             })
@@ -85,13 +216,56 @@
             positionFeature.setGeometry(coordinates ?
                 new ol.geom.Point(coordinates) : null);
         });
-        const accuracyFeature = new ol.Feature();
         new ol.layer.Vector({
             map: map,
             source: new ol.source.Vector({
                 features: [accuracyFeature, positionFeature]
             })
         });
+        var vectorSource2 = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            loader: function (extent, resolution, projection) {
+                var proj = projection.getCode();
+                var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
+                    'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
+                    'outputFormat=application/json&srsname=' + proj + '&' +
+                    'bbox=' + extent.join(',') + ',' + proj;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                var onError = function () {
+                    vectorSource.removeLoadedExtent(extent);
+                }
+                xhr.onerror = onError;
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
+                        vectorSource.addFeatures(
+                            vectorSource.getFormat().readFeatures(xhr.responseText));
+                    } else {
+                        onError();
+                    }
+                }
+                xhr.send();
+            },
+            strategy: ol.loadingstrategy.bbox
+        });
+        const unitsSelect = document.getElementById('units');
+        function onChange() {
+            scaleLineControl.setUnits(unitsSelect.value);
+        }
+        unitsSelect.addEventListener('change', onChange);
+        onChange();
+        var coordinates = [[-93.0094688, 45.08414884], [-93.0094688, 45.08414884]];
+
+        var layerLines = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [new ol.Feature({
+                    geometry: new ol.geom.LineString(coordinates),
+                    name: 'Line'
+                })]
+            }),
+        });
+
+        map.addLayer(layerLines);
     </script>
 </body>
 </html>

@@ -85,23 +85,9 @@
         const WhiteBear = [-93.0094688, 45.08414884]; // note api has it long/lat
         const scaleLineControl = new ol.control.ScaleLine();
 
-        var p1 = new LatLon(45.08414884, -93.0094688);
-        var p2 = p1.destinationPoint(1, 45.0); // will need to convert coords
-        //var p2 = p1.destinationPoint(7794, 300.7); // 51.5135°N, 000.0983°W
-        console.info('p1 p2', p1, p2);
-
-
         var CurrentLoc = WhiteBear; // expect a long list
         console.info('loc ', CurrentLoc);
-        const rome = new ol.Feature({
-            // just a demo
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([12.5, 41.9]))
-        });
         var vectorSource = new ol.source.Vector({});
-
-        var vectorLayer = new ol.layer.Vector({
-            source: vectorSource
-        });
         var VL = new ol.layer.Vector({
             title: 'added Layer',
             source: new ol.source.Vector({
@@ -111,7 +97,7 @@
         })
         const view = new ol.View({
             center: ol.proj.fromLonLat(CurrentLoc),
-            zoom: 15,
+            zoom: 13,
             rotation: 1
         });
         // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too
@@ -124,7 +110,31 @@
                 Math.cos(lat) * Math.sin(dist) * Math.cos(heading));
             return [180 / Math.PI * lat2, 180 / Math.PI * (lng + Math.atan2(Math.sin(heading) * Math.sin(dist) * Math.cos(lat2), Math.cos(dist) - Math.sin(lat) * Math.sin(lat2)))];
         }
-
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 20,
+                fill: new ol.style.Fill({
+                    color: [255, 204, 102, 1]
+                }),
+                stroke: new ol.style.Stroke({
+                    color: [255, 204, 102, 1],
+                    width: 2.5
+                })
+            }),
+            zIndex: 1
+        });
+        var icons = [];
+        var iconFeature;
+        var p1 = new LatLon(45.08414884, -93.0094688);
+        var p2 = p1.destinationPoint(10, 45.0); // will need to convert coords
+        var p3 = destination(-93.0094688, 45.08414884, 10, 30.0);
+        console.info('xxxcords ', p1, p2, p3);
+        tile_layer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
+                url: '/maps/Tiles/{z}/{x}/{y}.png'
+            })
+        })
         var map = new ol.Map({
             target: 'mapDIV',
             controls: ol.control.defaults({
@@ -136,17 +146,55 @@
                 scaleLineControl
             ]),
             layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.XYZ({
-                    //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
-                    url: '/maps/Tiles/{z}/{x}/{y}.png'
-                    })
-                })
+                tile_layer
             ],
             view: view
         });
 
+        var point_feature = new ol.Feature({});
+        var point_geom = new ol.geom.Point([p2.lon, p2.lat]);
+        point_feature.setGeometry(point_geom);
+        var linestring_feature = new ol.Feature({
+            geometry: new ol.geom.LineString(
+                [[p2.lon, p2.lat], p3]
+            )
+        });
+        var vector_layer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [point_feature, linestring_feature]
+            })
+        })
+        var features = [
+            point_feature,
+            linestring_feature
+        ];
+        map.addLayer(vector_layer);
+        function transform_geometry(element) {
+            var current_projection = new ol.proj.Projection({ code: "EPSG:4326" });
+            var new_projection = tile_layer.getSource().getProjection();
 
+            element.getGeometry().transform(current_projection, new_projection);
+        }
+        features.forEach(transform_geometry);
+        var fill = new ol.style.Fill({
+            color: [180, 0, 0, 0.3]
+        });
+
+        var stroke = new ol.style.Stroke({
+            color: [180, 0, 0, 1],
+            width: 1
+        });
+        var style = new ol.style.Style({
+            image: new ol.style.Circle({
+                fill: fill,
+                stroke: stroke,
+                radius: 8
+            }),
+            fill: fill,
+            stroke: stroke
+        });
+        vector_layer.setStyle(style);
+        
         const geolocation = new ol.Geolocation({
             // enableHighAccuracy must be set to true to have the heading value.
             trackingOptions: {
@@ -254,18 +302,6 @@
         }
         unitsSelect.addEventListener('change', onChange);
         onChange();
-        var coordinates = [[-93.0094688, 45.08414884], [-93.0094688, 45.08414884]];
-
-        var layerLines = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                features: [new ol.Feature({
-                    geometry: new ol.geom.LineString(coordinates),
-                    name: 'Line'
-                })]
-            }),
-        });
-
-        map.addLayer(layerLines);
     </script>
 </body>
 </html>

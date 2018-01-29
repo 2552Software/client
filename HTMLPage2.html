@@ -97,7 +97,7 @@
         })
         const view = new ol.View({
             center: ol.proj.fromLonLat(CurrentLoc),
-            zoom: 13,
+            zoom: 14,
             rotation: 1
         });
         // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too
@@ -123,12 +123,10 @@
             }),
             zIndex: 1
         });
-        var icons = [];
-        var iconFeature;
-        var p1 = new LatLon(45.08414884, -93.0094688);
-        var p2 = p1.destinationPoint(10, 45.0); // will need to convert coords
-        var p3 = destination(-93.0094688, 45.08414884, 10, 30.0);
-        console.info('xxxcords ', p1, p2, p3);
+        var p1 = new LatLon(45.0846885, -93.0099398); // Latitude: 45.0846885    Longitude: -93.0099398
+        var p1a = p1.destinationPoint(3000, 0.2); // will need to convert coords
+        var p2 = p1a.destinationPoint(1000, 0.0983); // will need to convert coords
+        //console.info('xxxcords ', p1, p2, p3);
         tile_layer = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
@@ -150,13 +148,13 @@
             ],
             view: view
         });
-
-        var point_feature = new ol.Feature({});
-        var point_geom = new ol.geom.Point([p2.lon, p2.lat]);
-        point_feature.setGeometry(point_geom);
+        var pos;
+        var point_feature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([p1a.lon, p1a.lat]))
+        });
         var linestring_feature = new ol.Feature({
             geometry: new ol.geom.LineString(
-                [[p2.lon, p2.lat], p3]
+                [ol.proj.fromLonLat([p1a.lon, p1a.lat]), ol.proj.fromLonLat([p2.lon, p2.lat])]
             )
         });
         var vector_layer = new ol.layer.Vector({
@@ -164,18 +162,9 @@
                 features: [point_feature, linestring_feature]
             })
         })
-        var features = [
-            point_feature,
-            linestring_feature
-        ];
         map.addLayer(vector_layer);
-        function transform_geometry(element) {
-            var current_projection = new ol.proj.Projection({ code: "EPSG:4326" });
-            var new_projection = tile_layer.getSource().getProjection();
+        //map.removeLayer(vector_layer);
 
-            element.getGeometry().transform(current_projection, new_projection);
-        }
-        features.forEach(transform_geometry);
         var fill = new ol.style.Fill({
             color: [180, 0, 0, 0.3]
         });
@@ -229,7 +218,7 @@
         });
         geolocation.on('change', function (evt) {
             //save position and set map center
-            var pos = geolocation.getPosition();
+            pos = geolocation.getPosition();
             console.info('pos ', pos);
             map.getView().setCenter(pos);
 

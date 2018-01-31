@@ -2,8 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>WebSockets Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>The Party is HERE</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.6.4/build/ol.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="./vector3d.js"></script>
+    <script src="./dms.js"></script>
+    <script src="./latlon-vectors.js"></script>
+    <style>
+
+        .rotate-north {
+            top: 65px;
+            left: .5em;
+        }
+
+        .ol-touch .rotate-north {
+            top: 80px;
+        }
+    </style>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -28,78 +49,112 @@
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Charts</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="false">Video</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Configure</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div class="row">
-                    <button onclick="animateGauges()">Animate</button>
-                    <button onclick="stopGaugesAnimation()">Stop animation</button>
-                    <div class="col-sm">
-                        <canvas data-type="radial-gauge"
-                                data-value="-20"
-                                data-width="400"
-                                data-height="400"
-                                data-bar-width="10"
-                                data-bar-shadow="5"
-                                data-color-bar-progress="rgba(0,0,250,.75)"></canvas>
-
+                <div class="row justify-content-md-center">
+                    <div class="col-xl-10">
+                        <div id="mapDIV" class="map"></div>
+                        <div id="info" style="display: none;"></div>
+                        <label for="track">
+                            track position
+                            <input id="track" type="checkbox" />
+                        </label>
+                        <p>
+                            position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
+                            altitude : <code id="altitude"></code>&nbsp;&nbsp;
+                            altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
+                            heading : <code id="heading"></code>&nbsp;&nbsp;
+                            speed : <code id="speed"></code>
+                        </p>
+                        <select id="units">
+                            <option value="degrees">degrees</option>
+                            <option value="imperial">imperial inch</option>
+                            <option value="us">us inch</option>
+                            <option value="nautical">nautical mile</option>
+                            <option value="metric" selected>metric</option>
+                        </select>
                     </div>
-                    <div class="col-sm">
-                        <canvas data-type="radial-gauge"
-                                data-min-value="0"
-                                data-max-value="360"
-                                data-major-ticks="N,NE,E,SE,S,SW,W,NW,N"
-                                data-minor-ticks="22"
-                                data-ticks-angle="360"
-                                data-start-angle="180"
-                                data-stroke-ticks="false"
-                                data-highlights="false"
-                                data-color-plate="#33a"
-                                data-color-major-ticks="#f5f5f5"
-                                data-color-minor-ticks="#ddd"
-                                data-color-numbers="#ccc"
-                                data-color-needle="rgba(240, 128, 128, 1)"
-                                data-color-needle-end="rgba(255, 160, 122, .9)"
-                                data-value-box="true"
-                                data-value-text-shadow="false"
-                                data-color-circle-inner="#fff"
-                                data-color-needle-circle-outer="#ccc"
-                                data-needle-circle-size="15"
-                                data-needle-circle-outer="false"
-                                data-animation-rule="linear"
-                                data-needle-type="line"
-                                data-needle-start="75"
-                                data-needle-end="99"
-                                data-needle-width="3"
-                                data-borders="true"
-                                data-border-inner-width="0"
-                                data-border-middle-width="0"
-                                data-border-outer-width="10"
-                                data-color-border-outer="#ccc"
-                                data-color-border-outer-end="#ccc"
-                                data-color-needle-shadow-down="#222"
-                                data-border-shadow-width="0"
-                                data-animation-target="plate"
-                                data-units="ᵍ"
-                                data-title="DIRECTION"
-                                data-font-title-size="19"
-                                data-color-title="#f5f5f5"
-                                data-animation-duration="1500"
-                                data-width="400"
-                                data-height="400"
-                                data-use-min-path="true"></canvas>
+                    <div class="col-xl-2">
+                        <div class="row justify-content-md-center">
+                            <canvas data-type="radial-gauge"
+                                    data-value="-20"
+                                    data-width="300"
+                                    data-height="300"
+                                    data-bar-width="10"
+                                    data-bar-shadow="5"
+                                    data-color-bar-progress="rgba(0,0,250,.75)"></canvas>
+                            <div class="row justify-content-md-center">
+                                <canvas data-type="radial-gauge"
+                                        data-min-value="0"
+                                        data-max-value="360"
+                                        data-major-ticks="N,NE,E,SE,S,SW,W,NW,N"
+                                        data-minor-ticks="22"
+                                        data-ticks-angle="360"
+                                        data-start-angle="180"
+                                        data-stroke-ticks="false"
+                                        data-highlights="false"
+                                        data-color-plate="#33a"
+                                        data-color-major-ticks="#f5f5f5"
+                                        data-color-minor-ticks="#ddd"
+                                        data-color-numbers="#ccc"
+                                        data-color-needle="rgba(240, 128, 128, 1)"
+                                        data-color-needle-end="rgba(255, 160, 122, .9)"
+                                        data-value-box="true"
+                                        data-value-text-shadow="false"
+                                        data-color-circle-inner="#fff"
+                                        data-color-needle-circle-outer="#ccc"
+                                        data-needle-circle-size="15"
+                                        data-needle-circle-outer="false"
+                                        data-animation-rule="linear"
+                                        data-needle-type="line"
+                                        data-needle-start="75"
+                                        data-needle-end="99"
+                                        data-needle-width="3"
+                                        data-borders="true"
+                                        data-border-inner-width="0"
+                                        data-border-middle-width="0"
+                                        data-border-outer-width="10"
+                                        data-color-border-outer="#ccc"
+                                        data-color-border-outer-end="#ccc"
+                                        data-color-needle-shadow-down="#222"
+                                        data-border-shadow-width="0"
+                                        data-animation-target="plate"
+                                        data-units="ᵍ"
+                                        data-title="DIRECTION"
+                                        data-font-title-size="19"
+                                        data-color-title="#f5f5f5"
+                                        data-animation-duration="1500"
+                                        data-width="300"
+                                        data-height="300"
+                                        data-use-min-path="true"></canvas>
+                                <div>
+                                    <canvas id="canvas"></canvas>
+                                </div>
+                                <div>
+                                    <img src="./pic00008.jpg" alt="..." class="img-thumbnail">
+                                </div>
+                                <button onclick="animateGauges()">Animate</button>
+                                <button onclick="stopGaugesAnimation()">Stop animation</button>
 
-                    </div>
-                    <div class="col-sm">
+                            </div>
+                        </div>
                     </div>
                 </div>
-
+            </div>
+            <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab-tab">
+                <div class="row justify-content-md-center">
+                    <img src="./pic00008.jpg" class="img-fluid" alt="Responsive image">
+                </div>
             </div>
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div style="width:75%;">
-                    <canvas id="canvas"></canvas>
+                <div>
+                    <canvas id="canvas2"></canvas>
                 </div>
             </div>
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -153,241 +208,488 @@
             </div>
         </div>
     </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script>
-            if (!Array.prototype.forEach) {
-                Array.prototype.forEach = function (cb) {
-                    var i = 0, s = this.length;
-                    for (; i < s; i++) {
-                        cb && cb(this[i], i, this);
-                    }
-                }
-            }
-            document.fonts && document.fonts.forEach(function (font) {
-                font.loaded.then(function () {
-                    if (font.family.match(/Led/)) {
-                        document.gauges.forEach(function (gauge) {
-                            gauge.update();
-                        });
-                    }
-                });
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+        window.app = {};
+        const app = window.app;
+        /**
+         * @constructor
+         * @extends {ol.control.Control}
+         * @param {Object=} opt_options Control options.
+         */
+        app.RotateNorthControl = function (opt_options) {
+
+            const options = opt_options || {};
+
+            const button = document.createElement('button');
+            button.innerHTML = 'N';
+
+            const this_ = this;
+            const handleRotateNorth = function () {
+                this_.getMap().getView().setRotation(0);
+            };
+
+            button.addEventListener('click', handleRotateNorth, false);
+            button.addEventListener('touchstart', handleRotateNorth, false);
+
+            const element = document.createElement('div');
+            element.className = 'rotate-north ol-unselectable ol-control';
+            element.appendChild(button);
+
+            ol.control.Control.call(this, {
+                element: element,
+                target: options.target
             });
-            var timers = [];
-            function animateGauges() {
-                document.gauges.forEach(function (gauge) {
-                    timers.push(setInterval(function () {
-                        var min = gauge.options.minValue - 20;
-                        var max = gauge.options.maxValue + 20;
-                        gauge.value = min + Math.random() * (max - min);
-                    }, gauge.animation.duration + 50));
-                });
-            }
-            function stopGaugesAnimation() {
-                timers.forEach(function (timer) {
-                    clearInterval(timer);
-                });
-            }
-        </script>
-        <script>
-            Math.seed = 6;
-            Math.seededRandom = function (max, min) {
-                max = max || 1;
-                min = min || 0;
 
-                Math.seed = (Math.seed * 9301 + 49297) % 233280;
-                var rnd = Math.seed / 233280;
+        };
+        ol.inherits(app.RotateNorthControl, ol.control.Control);
+        // translater http://epsg.io/transform#s_srs=4326&t_srs=3857&x=-93.0094689&y=45.0841489
+        const WhiteBear = [-93.0094688, 45.08414884]; // note api has it long/lat
+        const scaleLineControl = new ol.control.ScaleLine();
 
-                return min + rnd * (max - min);
-            }
-            window.chartColors = {
-                red: 'rgb(255, 99, 132)',
-                orange: 'rgb(255, 159, 64)',
-                yellow: 'rgb(255, 205, 86)',
-                green: 'rgb(75, 192, 192)',
-                blue: 'rgb(54, 162, 235)',
-                purple: 'rgb(153, 102, 255)',
-                grey: 'rgb(201, 203, 207)'
-            };
-            var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            var config = {
-                type: 'line',
-                data: {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
-                    datasets: [{
-                        label: "Wind History",
-                        backgroundColor: window.chartColors.red,
-                        borderColor: window.chartColors.red,
-                        data: [
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom())
-                        ],
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'FUMI Wind'
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Time'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'KPH'
-                            }
-                        }]
+        var CurrentLoc = WhiteBear; // expect a long list
+        console.info('loc ', CurrentLoc);
+        var vectorSource = new ol.source.Vector({});
+        var VL = new ol.layer.Vector({
+            title: 'added Layer',
+            source: new ol.source.Vector({
+                url: 'C:\maps\large.geojson',
+                format: new ol.format.GeoJSON()
+            })
+        })
+        const view = new ol.View({
+            center: ol.proj.fromLonLat(CurrentLoc),
+            zoom: 14,
+            rotation: 1
+        });
+        // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too
+        function destination(lat, lng, dist, heading) {
+            lat *= Math.PI / 180;
+            lng *= Math.PI / 180;
+            heading *= Math.PI / 180;
+
+            var lat2 = Math.asin(Math.sin(lat) * Math.cos(dist) +
+                Math.cos(lat) * Math.sin(dist) * Math.cos(heading));
+            return [180 / Math.PI * lat2, 180 / Math.PI * (lng + Math.atan2(Math.sin(heading) * Math.sin(dist) * Math.cos(lat2), Math.cos(dist) - Math.sin(lat) * Math.sin(lat2)))];
+        }
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 20,
+                fill: new ol.style.Fill({
+                    color: [255, 204, 102, 1]
+                }),
+                stroke: new ol.style.Stroke({
+                    color: [255, 204, 102, 1],
+                    width: 2.5
+                })
+            }),
+            zIndex: 1
+        });
+        var p1 = new LatLon(45.0846885, -93.0099398); // Latitude: 45.0846885    Longitude: -93.0099398
+        var p1a = p1.destinationPoint(3000, 0.2); // will need to convert coords
+        var p2 = p1a.destinationPoint(1000, 0.0983); // will need to convert coords
+        //console.info('xxxcords ', p1, p2, p3);
+        tile_layer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
+                url: '/maps/Tiles/{z}/{x}/{y}.png'
+            })
+        })
+        var map = new ol.Map({
+            target: 'mapDIV',
+            controls: ol.control.defaults({
+                attributionOptions: {
+                    collapsible: false
+                }
+            }).extend([
+                new app.RotateNorthControl(),
+                scaleLineControl
+            ]),
+            layers: [
+                tile_layer
+            ],
+            view: view
+        });
+        var pos;
+        var point_feature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([p1a.lon, p1a.lat]))
+        });
+        var linestring_feature = new ol.Feature({
+            geometry: new ol.geom.LineString(
+                [ol.proj.fromLonLat([p1a.lon, p1a.lat]), ol.proj.fromLonLat([p2.lon, p2.lat])]
+            )
+        });
+        var vector_layer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [point_feature, linestring_feature]
+            })
+        })
+        map.addLayer(vector_layer);
+        //map.removeLayer(vector_layer);
+
+        var fill = new ol.style.Fill({
+            color: [180, 0, 0, 0.3]
+        });
+
+        var stroke = new ol.style.Stroke({
+            color: [180, 0, 0, 1],
+            width: 1
+        });
+        var style = new ol.style.Style({
+            image: new ol.style.Circle({
+                fill: fill,
+                stroke: stroke,
+                radius: 8
+            }),
+            fill: fill,
+            stroke: stroke
+        });
+        vector_layer.setStyle(style);
+
+        const geolocation = new ol.Geolocation({
+            // enableHighAccuracy must be set to true to have the heading value.
+            trackingOptions: {
+                enableHighAccuracy: true
+            },
+            tracking: true,
+            projection: view.getProjection()
+        });
+        function el(id) {
+            return document.getElementById(id);
+        }
+
+        el('track').addEventListener('change', function () {
+            console.info('track change ');
+            geolocation.setTracking(this.checked);
+        });
+        // update the HTML page when the position changes.
+        geolocation.on('change', function () {
+            console.info('geo change');
+            el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+            el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+            el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+            el('heading').innerText = geolocation.getHeading() + ' [rad]';
+            el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
+        });
+        // handle geolocation error.
+        geolocation.on('error', function (error) {
+            console.info('error ', error);
+            const info = document.getElementById('info');
+            info.innerHTML = error.message;
+            info.style.display = '';
+        });
+        geolocation.on('change', function (evt) {
+            //save position and set map center
+            pos = geolocation.getPosition();
+            console.info('pos ', pos);
+            map.getView().setCenter(pos);
+
+            //create icon at new map center
+            var iconFeature = new ol.Feature({
+                geometry: new ol.geom.Point(pos)
+            });
+
+            //add icon to vector source
+            vectorSource.addFeature(iconFeature);
+        });
+        const accuracyFeature = new ol.Feature();
+        geolocation.on('change:accuracyGeometry', function () {
+            console.info('change:accuracyGeometry');
+            accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+        });
+        const positionFeature = new ol.Feature();
+        positionFeature.setStyle(new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 6,
+                fill: new ol.style.Fill({
+                    color: 'rgba(255,0,0,0.8)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(0,255,0,0.8)',
+                    width: 2
+                })
+            })
+        }));
+        geolocation.on('change:position', function () {
+            const coordinates = geolocation.getPosition();
+            positionFeature.setGeometry(coordinates ?
+                new ol.geom.Point(coordinates) : null);
+        });
+        new ol.layer.Vector({
+            map: map,
+            source: new ol.source.Vector({
+                features: [accuracyFeature, positionFeature]
+            })
+        });
+        var vectorSource2 = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            loader: function (extent, resolution, projection) {
+                var proj = projection.getCode();
+                var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
+                    'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
+                    'outputFormat=application/json&srsname=' + proj + '&' +
+                    'bbox=' + extent.join(',') + ',' + proj;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                var onError = function () {
+                    vectorSource.removeLoadedExtent(extent);
+                }
+                xhr.onerror = onError;
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
+                        vectorSource.addFeatures(
+                            vectorSource.getFormat().readFeatures(xhr.responseText));
+                    } else {
+                        onError();
                     }
                 }
-            };
-            window.onload = function () {
-                var ctx = document.getElementById("canvas").getContext("2d");
-                window.myLine = new Chart(ctx, config);
-            };
-            document.getElementById('randomizeData').addEventListener('click', function () {
-                config.data.datasets.forEach(function (dataset) {
-                    dataset.data = dataset.data.map(function () {
-                        return randomScalingFactor();
+                xhr.send();
+            },
+            strategy: ol.loadingstrategy.bbox
+        });
+        const unitsSelect = document.getElementById('units');
+        function onChange() {
+            scaleLineControl.setUnits(unitsSelect.value);
+        }
+        unitsSelect.addEventListener('change', onChange);
+        onChange();
+    </script>
+    <script>
+        if (!Array.prototype.forEach) {
+            Array.prototype.forEach = function (cb) {
+                var i = 0, s = this.length;
+                for (; i < s; i++) {
+                    cb && cb(this[i], i, this);
+                }
+            }
+        }
+        document.fonts && document.fonts.forEach(function (font) {
+            font.loaded.then(function () {
+                if (font.family.match(/Led/)) {
+                    document.gauges.forEach(function (gauge) {
+                        gauge.update();
                     });
-                });
-                window.myLine.update();
+                }
             });
-            var colorNames = Object.keys(window.chartColors);
-            document.getElementById('addDataset').addEventListener('click', function () {
-                var colorName = colorNames[config.data.datasets.length % colorNames.length];
-                var newColor = window.chartColors[colorName];
-                var newDataset = {
-                    label: 'Dataset ' + config.data.datasets.length,
-                    backgroundColor: newColor,
-                    borderColor: newColor,
-                    data: [],
+        });
+        var timers = [];
+        function animateGauges() {
+            document.gauges.forEach(function (gauge) {
+                timers.push(setInterval(function () {
+                    var min = gauge.options.minValue - 20;
+                    var max = gauge.options.maxValue + 20;
+                    gauge.value = min + Math.random() * (max - min);
+                }, gauge.animation.duration + 50));
+            });
+        }
+        function stopGaugesAnimation() {
+            timers.forEach(function (timer) {
+                clearInterval(timer);
+            });
+        }
+    </script>
+    <script>
+        Math.seed = 6;
+        Math.seededRandom = function (max, min) {
+            max = max || 1;
+            min = min || 0;
+
+            Math.seed = (Math.seed * 9301 + 49297) % 233280;
+            var rnd = Math.seed / 233280;
+
+            return min + rnd * (max - min);
+        }
+        window.chartColors = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var config = {
+            type: 'line',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "Wind History",
+                    backgroundColor: window.chartColors.red,
+                    borderColor: window.chartColors.red,
+                    data: [
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom())
+                    ],
                     fill: false
-                };
-                for (var index = 0; index < config.data.labels.length; ++index) {
-                    newDataset.data.push(randomScalingFactor());
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'FUMI Wind'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'KPH'
+                        }
+                    }]
                 }
-                config.data.datasets.push(newDataset);
-                window.myLine.update();
+            }
+        };
+        window.onload = function () {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+            var ctx = document.getElementById("canvas2").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+        };
+        document.getElementById('randomizeData').addEventListener('click', function () {
+            config.data.datasets.forEach(function (dataset) {
+                dataset.data = dataset.data.map(function () {
+                    return randomScalingFactor();
+                });
             });
-            document.getElementById('addData').addEventListener('click', function () {
-                if (config.data.datasets.length > 0) {
-                    var month = MONTHS[config.data.labels.length % MONTHS.length];
-                    config.data.labels.push(month);
-                    config.data.datasets.forEach(function (dataset) {
-                        dataset.data.push(randomScalingFactor());
-                    });
-                    window.myLine.update();
-                }
-            });
-            document.getElementById('removeDataset').addEventListener('click', function () {
-                config.data.datasets.splice(0, 1);
-                window.myLine.update();
-            });
-            document.getElementById('removeData').addEventListener('click', function () {
-                config.data.labels.splice(-1, 1); // remove the label first
-                config.data.datasets.forEach(function (dataset, datasetIndex) {
-                    dataset.data.pop();
+            window.myLine.update();
+        });
+        var colorNames = Object.keys(window.chartColors);
+        document.getElementById('addDataset').addEventListener('click', function () {
+            var colorName = colorNames[config.data.datasets.length % colorNames.length];
+            var newColor = window.chartColors[colorName];
+            var newDataset = {
+                label: 'Dataset ' + config.data.datasets.length,
+                backgroundColor: newColor,
+                borderColor: newColor,
+                data: [],
+                fill: false
+            };
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+            }
+            config.data.datasets.push(newDataset);
+            window.myLine.update();
+        });
+        document.getElementById('addData').addEventListener('click', function () {
+            if (config.data.datasets.length > 0) {
+                var month = MONTHS[config.data.labels.length % MONTHS.length];
+                config.data.labels.push(month);
+                config.data.datasets.forEach(function (dataset) {
+                    dataset.data.push(randomScalingFactor());
                 });
                 window.myLine.update();
+            }
+        });
+        document.getElementById('removeDataset').addEventListener('click', function () {
+            config.data.datasets.splice(0, 1);
+            window.myLine.update();
+        });
+        document.getElementById('removeData').addEventListener('click', function () {
+            config.data.labels.splice(-1, 1); // remove the label first
+            config.data.datasets.forEach(function (dataset, datasetIndex) {
+                dataset.data.pop();
             });
-        </script>
-        <script>
-            //$('.odometer').html(123) // with jQuery
-            //http://blog.teamtreehouse.com/an-introduction-to-websockets
-            // Get references to elements on the page.
-            var form = document.getElementById('message-form');
-            var messageField = document.getElementById('message');
-            var messagesList = document.getElementById('messages');
-            var socketStatus = document.getElementById('status');
-            var closeBtn = document.getElementById('close');
-            var openBtn = document.getElementById('open');
-            // Create a new WebSocket. // ws://echo.websocket.org http://127.0.0.1:8000
-            var socket = new WebSocket('ws://127.0.0.1:8000');
-            // Show a connected message when the WebSocket is opened.
-            socket.onopen = function (event) {
-                socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
-                socketStatus.className = 'open';
+            window.myLine.update();
+        });
+    </script>
+    <script>
+        //$('.odometer').html(123) // with jQuery
+        //http://blog.teamtreehouse.com/an-introduction-to-websockets
+        // Get references to elements on the page.
+        var form = document.getElementById('message-form');
+        var messageField = document.getElementById('message');
+        var messagesList = document.getElementById('messages');
+        var socketStatus = document.getElementById('status');
+        var closeBtn = document.getElementById('close');
+        var openBtn = document.getElementById('open');
+        // Create a new WebSocket. // ws://echo.websocket.org http://127.0.0.1:8000
+        var socket = new WebSocket('ws://127.0.0.1:8000');
+        // Show a connected message when the WebSocket is opened.
+        socket.onopen = function (event) {
+            socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
+            socketStatus.className = 'open';
+        };
+        // Handle any errors that occur.
+        socket.onerror = function (error) {
+            console.log('WebSocket Error: ' + error);
+        };
+
+        //var odo = document.getElementByClass('.odometer');
+        // Send a message when the form is submitted.
+        form.onsubmit = function (e) {
+            e.preventDefault();
+            var msg = {
+                type: "message",
+                text: document.getElementById("message").value,
+                id: 1
             };
-            // Handle any errors that occur.
-            socket.onerror = function (error) {
-                console.log('WebSocket Error: ' + error);
-            };
+            socket.send(JSON.stringify(msg));
+            // Retrieve the message from the textarea.
+            //var message = messageField.value;
 
-            //var odo = document.getElementByClass('.odometer');
-            // Send a message when the form is submitted.
-            form.onsubmit = function (e) {
-                e.preventDefault();
-                var msg = {
-                    type: "message",
-                    text: document.getElementById("message").value,
-                    id: 1
-                };
-                socket.send(JSON.stringify(msg));
-                // Retrieve the message from the textarea.
-                //var message = messageField.value;
+            // Send the message through the WebSocket.
+            //socket.send(message);
 
-                // Send the message through the WebSocket.
-                //socket.send(message);
+            // Add the message to the messages list.
+            messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +
+                '</li>';
 
-                // Add the message to the messages list.
-                messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +
-                    '</li>';
+            // Clear out the message field.
+            messageField.value = '';
 
-                // Clear out the message field.
-                messageField.value = '';
+            return false;
+        };
 
-                return false;
-            };
+        // Close the WebSocket connection when the close button is clicked.
+        closeBtn.onclick = function (e) {
+            e.preventDefault();
 
-            // Close the WebSocket connection when the close button is clicked.
-            closeBtn.onclick = function (e) {
-                e.preventDefault();
+            // Close the WebSocket.
+            socket.close();
 
-                // Close the WebSocket.
-                socket.close();
+            return false;
+        };
+        openBtn.onclick = function (e) {
+            e.preventDefault();
 
-                return false;
-            };
-            openBtn.onclick = function (e) {
-                e.preventDefault();
+            return false;
+        };
+        // Show a disconnected message when the WebSocket is closed.
+        socket.onclose = function (event) {
+            socketStatus.innerHTML = 'Disconnected from WebSocket.';
+            socketStatus.className = 'closed';
+        };
+        // Handle messages sent by the server.
+        socket.onmessage = function (event) {
+            console.info('data ', event.data);
 
-                return false;
-            };
-            // Show a disconnected message when the WebSocket is closed.
-            socket.onclose = function (event) {
-                socketStatus.innerHTML = 'Disconnected from WebSocket.';
-                socketStatus.className = 'closed';
-            };
-            // Handle messages sent by the server.
-            socket.onmessage = function (event) {
-                console.info('data ', event.data);
-
-                var message = event.data;
-                messagesList.innerHTML += '<li class="received"><span>Received:</span>' +
-                    message + '</li>';
-            };
-        </script>
+            var message = event.data;
+            messagesList.innerHTML += '<li class="received"><span>Received:</span>' +
+                message + '</li>';
+        };
+    </script>
 </body>
 </html>

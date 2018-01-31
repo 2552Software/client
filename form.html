@@ -38,6 +38,7 @@
             -ms-user-select: none;
         }
     </style>
+    
 </head>
 <body>
     <div class="container-fluid">
@@ -84,13 +85,13 @@
                         <div class="row justify-content-md-center">
                             <canvas data-type="radial-gauge"
                                     data-value="-20"
-                                    data-width="300"
-                                    data-height="300"
+                                    data-width="250"
+                                    data-height="250"
                                     data-bar-width="10"
                                     data-bar-shadow="5"
                                     data-color-bar-progress="rgba(0,0,250,.75)"></canvas>
                             <div class="row justify-content-md-center">
-                                <canvas data-type="radial-gauge"
+                                <canvas id="WindDirectionGauge-id" data-type="radial-gauge"
                                         data-min-value="0"
                                         data-max-value="360"
                                         data-major-ticks="N,NE,E,SE,S,SW,W,NW,N"
@@ -126,15 +127,15 @@
                                         data-border-shadow-width="0"
                                         data-animation-target="plate"
                                         data-units="ᵍ"
-                                        data-title="DIRECTION"
+                                        data-title="FUMi Wind"
                                         data-font-title-size="19"
                                         data-color-title="#f5f5f5"
                                         data-animation-duration="1500"
-                                        data-width="300"
-                                        data-height="300"
+                                        data-width="250"
+                                        data-height="250"
                                         data-use-min-path="true"></canvas>
                                 <div>
-                                    <canvas id="canvas"></canvas>
+                                    <canvas id="WindSpeedGauge-id"></canvas>
                                 </div>
                                 <div>
                                     <img src="./pic00008.jpg" alt="..." class="img-thumbnail">
@@ -211,6 +212,41 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+        var radialWindSpeed = new RadialGauge({
+            renderTo: 'WindSpeedGauge-id',
+            width: 250,
+            height: 250,
+            units: 'knots/h',
+            title: true,
+            value: 0,
+            minValue: 0,
+            maxValue: 40,
+            majorTicks: [
+                '0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38', '40'
+            ],
+            minorTicks: 2,
+            strokeTicks: false,
+            highlights: [
+                { from: 0, to: 4, color: 'rgba(255,215,0,.45)' },
+                { from: 4, to: 16, color: 'rgba(0,255,0,.15)' },
+                { from: 16, to: 22, color: 'rgba(255,255,0,.8)' },
+                { from: 22, to: 40, color: 'rgba(255,0,0,.9)' }
+            ],
+            colorPlate: '#222',
+            colorMajorTicks: '#f5f5f5',
+            colorMinorTicks: '#ddd',
+            colorTitle: '#fff',
+            colorUnits: '#ccc',
+            colorNumbers: '#eee',
+            colorNeedle: 'rgba(240, 128, 128, 1)',
+            colorNeedleEnd: 'rgba(255, 160, 122, .9)',
+            valueBox: true,
+            animationRule: 'bounce',
+            animationDuration: 500
+        });
+        radialWindSpeed.draw();
+    </script>
     <script>
         window.app = {};
         const app = window.app;
@@ -476,6 +512,7 @@
         });
         var timers = [];
         function animateGauges() {
+            
             document.gauges.forEach(function (gauge) {
                 timers.push(setInterval(function () {
                     var min = gauge.options.minValue - 20;
@@ -563,57 +600,46 @@
             }
         };
         window.onload = function () {
-            var ctx = document.getElementById("canvas").getContext("2d");
-            window.myLine = new Chart(ctx, config);
-            var ctx = document.getElementById("canvas2").getContext("2d");
-            window.myLine = new Chart(ctx, config);
+           // var ctx = document.getElementById("canvas").getContext("2d");
+           // window.myLine = new Chart(ctx, config);
+           // var ctx = document.getElementById("canvas2").getContext("2d");
+           // window.myLine = new Chart(ctx, config);
         };
-        document.getElementById('randomizeData').addEventListener('click', function () {
-            config.data.datasets.forEach(function (dataset) {
-                dataset.data = dataset.data.map(function () {
-                    return randomScalingFactor();
-                });
-            });
-            window.myLine.update();
-        });
+        //document.getElementById('randomizeData').addEventListener('click', function () {
+          //  config.data.datasets.forEach(function (dataset) {
+            //    dataset.data = dataset.data.map(function () {
+              //      return randomScalingFactor();
+               // });
+            //});
+           // window.myLine.update();
+       // });
         var colorNames = Object.keys(window.chartColors);
-        document.getElementById('addDataset').addEventListener('click', function () {
-            var colorName = colorNames[config.data.datasets.length % colorNames.length];
-            var newColor = window.chartColors[colorName];
-            var newDataset = {
-                label: 'Dataset ' + config.data.datasets.length,
-                backgroundColor: newColor,
-                borderColor: newColor,
-                data: [],
-                fill: false
-            };
-            for (var index = 0; index < config.data.labels.length; ++index) {
-                newDataset.data.push(randomScalingFactor());
-            }
-            config.data.datasets.push(newDataset);
-            window.myLine.update();
-        });
-        document.getElementById('addData').addEventListener('click', function () {
-            if (config.data.datasets.length > 0) {
-                var month = MONTHS[config.data.labels.length % MONTHS.length];
-                config.data.labels.push(month);
-                config.data.datasets.forEach(function (dataset) {
-                    dataset.data.push(randomScalingFactor());
-                });
-                window.myLine.update();
-            }
-        });
-        document.getElementById('removeDataset').addEventListener('click', function () {
-            config.data.datasets.splice(0, 1);
-            window.myLine.update();
-        });
-        document.getElementById('removeData').addEventListener('click', function () {
-            config.data.labels.splice(-1, 1); // remove the label first
-            config.data.datasets.forEach(function (dataset, datasetIndex) {
-                dataset.data.pop();
-            });
-            window.myLine.update();
-        });
+        //document.getElementById('addDataset').addEventListener('click', function () {
+          //  var colorName = colorNames[config.data.datasets.length % colorNames.length];
+            //var newColor = window.chartColors[colorName];
+            //var newDataset = {
+             //   label: 'Dataset ' + config.data.datasets.length,
+              //  backgroundColor: newColor,
+               // borderColor: newColor,
+                //data: [],
+                //fill: false
+            //};
+            //for (var index = 0; index < config.data.labels.length; ++index) {
+              //  newDataset.data.push(randomScalingFactor());
+           // }
+            //config.data.datasets.push(newDataset);
+            //window.myLine.update();
+        //});
+        //document.getElementById('addData').addEventListener('click', function () {
+          //  if (config.data.datasets.length > 0) {
+            //    var month = MONTHS[config.data.labels.length % MONTHS.length];
+              //  config.data.labels.push(month);
+                ///config.data.datasets.forEach(function (dataset) {
+                   // dataset.data.push(randomScalingFactor());
+                //});
+                //window.myLine.update();
+           // }
+        //});
     </script>
     <script>
         //$('.odometer').html(123) // with jQuery
@@ -684,11 +710,13 @@
         };
         // Handle messages sent by the server.
         socket.onmessage = function (event) {
-            console.info('data ', event.data);
-
-            var message = event.data;
-            messagesList.innerHTML += '<li class="received"><span>Received:</span>' +
-                message + '</li>';
+            console.info('direction ', event.data);
+            var myObj = JSON.parse(event.data);
+            console.info('direction2 ', myObj.direction);
+            var speedGauge = document.gauges.get('WindSpeedGauge-id');
+            speedGauge.value = myObj.speed;
+            var directionGauge = document.gauges.get('WindDirectionGauge-id');
+            directionGauge.value = myObj.direction;
         };
     </script>
 </body>

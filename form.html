@@ -9,8 +9,12 @@
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
     <script src="https://openlayers.org/en/v4.6.4/build/ol.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
     <script src="./vector3d.js"></script>
     <script src="./dms.js"></script>
     <script src="./latlon-vectors.js"></script>
@@ -18,10 +22,12 @@
         img.olTileImage {
             max-width: none;
         }
+
         .rotate-north {
             top: 65px;
             left: .5em;
         }
+
         .ol-touch .rotate-north {
             top: 80px;
         }
@@ -39,690 +45,693 @@
             -ms-user-select: none;
         }
     </style>
-    
+
 </head>
 <body>
 
     <div class="container-fluid">
         <div class="row justify-content-md-center">
-            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Charts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="false">Video</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Configure</a>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <div class="row justify-content-md-center">
-                        <div class="col-xl-2">
-                            <canvas id="canvas2"></canvas>
-                        </div>
-                        <div class="col-xl-8">
-                            <div id="mapDIV" class="map"></div>
-                            <div id="info" style="display: none;"></div>
-                            <label for="track">
-                                track position
-                                <input id="track" type="checkbox" />
-                            </label>
-                            <p>
-                                position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
-                                altitude : <code id="altitude"></code>&nbsp;&nbsp;
-                                altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
-                                heading : <code id="heading"></code>&nbsp;&nbsp;
-                                speed : <code id="speed"></code>
-                            </p>
-                            <select id="units">
-                                <option value="degrees">degrees</option>
-                                <option value="imperial">imperial inch</option>
-                                <option value="us">us inch</option>
-                                <option value="nautical">nautical mile</option>
-                                <option value="metric" selected>metric</option>
-                            </select>
-                        </div>
-                        <div class="col-xl-2">
-                            <div class="row justify-content-md-center">
-                                <canvas id="xWindDirectionGaugeHeader-id" data-type="radial-gauge"></canvas>
-                                <canvas id="WindDirectionGauge-id" data-type="radial-gauge"></canvas>
-                                <canvas id="WindSpeedGauge-id"></canvas>
-                                <img src="./pic00008.jpg" alt="..." class="img-thumbnail">
-                                <button onclick="animateGauges()">Animate</button>
-                                <button onclick="stopGaugesAnimation()">Stop animation</button>
+            <div class="col-md-1">
+                <div class="d-none d-sm-block well-sm center-block" data-toggle="modal" data-target="#exampleModal">
+                    <canvas id="WindDirectionGauge-id"></canvas>
+                    <h2>put wind rose here</h2>
+                    <h2>gusts chart</h2>
+                    <h2>baro pressure graph</h2>
+                    <h2>others?</h2>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <canvas id="graph-id"></canvas>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab-tab">
-                    <div class="row justify-content-md-center">
-                        <img src="./pic00008.jpg" class="img-fluid" alt="Responsive image">
+                <div data-toggle="popover" class="d-none d-sm-block center-block well-sm" data-content="Some content inside the popover">
+                    <canvas id="WindSpeedGauge-id"></canvas>
+                </div>
+                <div class="d-md-none dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        Dropdown Example
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">HTML</a></li>
+                        <li><a href="#">CSS</a></li>
+                        <li><a href="#">JavaScript</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="well">
+                    <div id="mapDIV" class="map"></div>
+                    <div id="info" style="display: none;"></div>
+                    <label for="track">
+                        track position
+                        <input id="track" type="checkbox" />
+                    </label>
+                    <p>
+                        position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
+                        altitude : <code id="altitude"></code>&nbsp;&nbsp;
+                        altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
+                        heading : <code id="heading"></code>&nbsp;&nbsp;
+                        speed : <code id="speed"></code>
+                    </p>
+                    <select id="units">
+                        <option value="degrees">degrees</option>
+                        <option value="imperial">imperial inch</option>
+                        <option value="us">us inch</option>
+                        <option value="nautical">nautical mile</option>
+                        <option value="metric" selected>metric</option>
+                    </select>
+                </div>
+                <ul id="messages"></ul>
+                <form id="message-form" action="#" method="post">
+                    <textarea id="message" placeholder="Write your message here..." required></textarea>
+                    <button type="submit">Send Message</button>
+                    <button type="button" id="close">Close Connection</button>
+                    <button type="button" id="open">Open Connection</button>
+                </form>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">@example.com</span>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <div>
-                        <canvas id="canvas2"></canvas>
+
+                <label for="basic-url">Your vanity URL</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+                    </div>
+                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <div class="input-group-append">
+                        <span class="input-group-text">.00</span>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                    <div id="status">Connecting...</div>
 
-                    <ul id="messages"></ul>
-                    <form id="message-form" action="#" method="post">
-                        <textarea id="message" placeholder="Write your message here..." required></textarea>
-                        <button type="submit">Send Message</button>
-                        <button type="button" id="close">Close Connection</button>
-                        <button type="button" id="open">Open Connection</button>
-                    </form>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">@</span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">With textarea</span>
                     </div>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
 
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <span class="input-group-text" id="basic-addon2">@example.com</span>
-                        </div>
-                    </div>
-
-                    <label for="basic-url">Your vanity URL</label>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
-                        </div>
-                        <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                        <div class="input-group-append">
-                            <span class="input-group-text">.00</span>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">With textarea</span>
-                        </div>
-                        <textarea class="form-control" aria-label="With textarea"></textarea>
-                    </div>
+            </div>
+            <div class="col-md-2">
+                <div class="well-sm">
+                    <img class="center-block img-thumbnail" src="./pic00008.jpg" alt="...">
+                </div>
+                <div class="well-sm">
+                    <img class="center-block img-thumbnail" src="./pic00008.jpg" alt="...">
+                </div>
+                <div class="well-sm">
+                    <img class="center-block img-thumbnail" src="./pic00008.jpg" alt="...">
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script>
-            var gauge = new RadialGauge({
-                renderTo: 'WindDirectionGauge-id',
-                minValue: 0,
-                maxValue: 360,
-                majorTicks: [
-                    "N",
-                    "NE",
-                    "E",
-                    "SE",
-                    "S",
-                    "SW",
-                    "W",
-                    "NW",
-                    "N"
-                ],
-                minorTicks: 22,
-                ticksAngle: 360,
-                startAngle: 180,
-                strokeTicks: false,
-                highlights: false,
-                colorPlate: "#a33",
-                colorMajorTicks: "#f5f5f5",
-                colorMinorTicks: "#ddd",
-                colorNumbers: "#ccc",
-                colorNeedle: "rgba(240, 128, 128, 1)",
-                colorNeedleEnd: "rgba(255, 160, 122, .9)",
-                valueBox: false,
-                valueTextShadow: false,
-                colorCircleInner: "#fff",
-                colorNeedleCircleOuter: "#ccc",
-                needleCircleSize: 15,
-                needleCircleOuter: false,
-                animationRule: "linear",
-                needleType: "line",
-                needleStart: 75,
-                needleEnd: 99,
-                needleWidth: 3,
-                borders: true,
-                borderInnerWidth: 0,
-                borderMiddleWidth: 0,
-                borderOuterWidth: 10,
-                colorBorderOuter: "#ccc",
-                colorBorderOuterEnd: "#ccc",
-                colorNeedleShadowDown: "#222",
-                borderShadowWidth: 0,
-                animationTarget: "plate",
-                animationDuration: 1500,
-                value: 45.5,
-                valueBox: true,
-                useMinPath: true,
-                animateOnInit: true
-            });
-            gauge.draw();
+    </div>
+ 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+        $('[data-toggle="popover"]').popover();
+        var gauge = new RadialGauge({
+            renderTo: 'WindDirectionGauge-id',
+            width: 200,
+            height: 200,
+            minValue: 0,
+            maxValue: 360,
+            majorTicks: [
+                "N",
+                "NE",
+                "E",
+                "SE",
+                "S",
+                "SW",
+                "W",
+                "NW",
+                "N"
+            ],
+            animateOnInit:true,
+            minorTicks: 22,
+            ticksAngle: 360,
+            startAngle: 180,
+            strokeTicks: false,
+            highlights: false,
+            colorPlate: "#a33",
+            colorMajorTicks: "#f5f5f5",
+            colorMinorTicks: "#ddd",
+            colorNumbers: "#ccc",
+            colorNeedle: "rgba(240, 128, 128, 1)",
+            colorNeedleEnd: "rgba(255, 160, 122, .9)",
+            valueBox: false,
+            valueTextShadow: false,
+            colorCircleInner: "#fff",
+            colorNeedleCircleOuter: "#ccc",
+            needleCircleSize: 15,
+            needleCircleOuter: false,
+            animationRule: "linear",
+            needleType: "line",
+            needleStart: 75,
+            needleEnd: 99,
+            needleWidth: 3,
+            borders: true,
+            borderInnerWidth: 0,
+            borderMiddleWidth: 0,
+            borderOuterWidth: 10,
+            colorBorderOuter: "#ccc",
+            colorBorderOuterEnd: "#ccc",
+            colorNeedleShadowDown: "#222",
+            borderShadowWidth: 0,
+            animationTarget: "plate",
+            animationDuration: 1500,
+            value: 45.5,
+            valueBox: true,
+            useMinPath: true,
+            animateOnInit: true
+        });
+        gauge.draw();
 
-            var radialWindSpeed = new RadialGauge({
-                renderTo: 'WindSpeedGauge-id',
-                width: 250,
-                height: 250,
-                units: 'knots/h',
-                title: true,
-                value: 0,
-                minValue: 0,
-                maxValue: 45,
-                exactticks: true,
-                majorTicks: [
-                    '0', '5', '10', '15', '20', '25', '30', '40', '45'
-                ],
-                minorTicks: 5,
-                strokeTicks: false,
-                highlights: [
-                    { from: 0, to: 5, color: 'rgba(255,215,0,.45)' },
-                    { from: 5, to: 15, color: 'rgba(0,255,0,.15)' },
-                    { from: 15, to: 20, color: 'rgba(255,255,0,.8)' },
-                    { from: 20, to: 45, color: 'rgba(255,0,0,.9)' }
-                ],
-                colorPlate: '#222',
-                colorMajorTicks: '#f5f5f5',
-                colorMinorTicks: '#ddd',
-                colorTitle: '#fff',
-                colorUnits: '#ccc',
-                colorNumbers: '#eee',
-                colorNeedle: 'rgba(240, 128, 128, 1)',
-                colorNeedleEnd: 'rgba(255, 160, 122, .9)',
-                valueBox: true,
-                animationRule: 'bounce',
-                animationDuration: 500
-            }).draw();
-        </script>
-        <script>
-            window.app = {};
-            const app = window.app;
-            /**
-             * @constructor
-             * @extends {ol.control.Control}
-             * @param {Object=} opt_options Control options.
-             */
-            app.RotateNorthControl = function (opt_options) {
+        var radialWindSpeed = new RadialGauge({
+            renderTo: 'WindSpeedGauge-id',
+            animateOnInit: true,
+            width: 200,
+            height:200,
+            units: 'knots/h',
+            title: true,
+            value: 0,
+            minValue: 0,
+            maxValue: 45,
+            exactticks: true,
+            majorTicks: [
+                '0', '5', '10', '15', '20', '25', '30', '40', '45'
+            ],
+            minorTicks: 5,
+            strokeTicks: false,
+            highlights: [
+                { from: 0, to: 5, color: 'rgba(255,215,0,.45)' },
+                { from: 5, to: 15, color: 'rgba(0,255,0,.15)' },
+                { from: 15, to: 20, color: 'rgba(255,255,0,.8)' },
+                { from: 20, to: 45, color: 'rgba(255,0,0,.9)' }
+            ],
+            colorPlate: '#222',
+            colorMajorTicks: '#f5f5f5',
+            colorMinorTicks: '#ddd',
+            colorTitle: '#fff',
+            colorUnits: '#ccc',
+            colorNumbers: '#eee',
+            colorNeedle: 'rgba(240, 128, 128, 1)',
+            colorNeedleEnd: 'rgba(255, 160, 122, .9)',
+            valueBox: true,
+            animationRule: 'bounce',
+            animationDuration: 500
+        }).draw();
+    </script>
+    <script>
+        window.app = {};
+        const app = window.app;
+        /**
+         * @constructor
+         * @extends {ol.control.Control}
+         * @param {Object=} opt_options Control options.
+         */
+        app.RotateNorthControl = function (opt_options) {
 
-                const options = opt_options || {};
+            const options = opt_options || {};
 
-                const button = document.createElement('button');
-                button.innerHTML = 'N';
+            const button = document.createElement('button');
+            button.innerHTML = 'N';
 
-                const this_ = this;
-                const handleRotateNorth = function () {
-                    this_.getMap().getView().setRotation(0);
-                };
-
-                button.addEventListener('click', handleRotateNorth, false);
-                button.addEventListener('touchstart', handleRotateNorth, false);
-
-                const element = document.createElement('div');
-                element.className = 'rotate-north ol-unselectable ol-control';
-                element.appendChild(button);
-
-                ol.control.Control.call(this, {
-                    element: element,
-                    target: options.target
-                });
-
+            const this_ = this;
+            const handleRotateNorth = function () {
+                this_.getMap().getView().setRotation(0);
             };
-            ol.inherits(app.RotateNorthControl, ol.control.Control);
-            // translater http://epsg.io/transform#s_srs=4326&t_srs=3857&x=-93.0094689&y=45.0841489
-            const WhiteBear = [-93.0094688, 45.08414884]; // note api has it long/lat
-            const scaleLineControl = new ol.control.ScaleLine();
 
-            var CurrentLoc = WhiteBear; // expect a long list
-            console.info('loc ', CurrentLoc);
-            var vectorSource = new ol.source.Vector({});
-            var VL = new ol.layer.Vector({
-                title: 'added Layer',
-                source: new ol.source.Vector({
-                    url: 'C:\maps\large.geojson',
-                    format: new ol.format.GeoJSON()
-                })
-            })
-            const view = new ol.View({
-                center: ol.proj.fromLonLat(CurrentLoc),
-                zoom: 14,
-                rotation: 1
+            button.addEventListener('click', handleRotateNorth, false);
+            button.addEventListener('touchstart', handleRotateNorth, false);
+
+            const element = document.createElement('div');
+            element.className = 'rotate-north ol-unselectable ol-control';
+            element.appendChild(button);
+
+            ol.control.Control.call(this, {
+                element: element,
+                target: options.target
             });
-            // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too
-            function destination(lat, lng, dist, heading) {
-                lat *= Math.PI / 180;
-                lng *= Math.PI / 180;
-                heading *= Math.PI / 180;
 
-                var lat2 = Math.asin(Math.sin(lat) * Math.cos(dist) +
-                    Math.cos(lat) * Math.sin(dist) * Math.cos(heading));
-                return [180 / Math.PI * lat2, 180 / Math.PI * (lng + Math.atan2(Math.sin(heading) * Math.sin(dist) * Math.cos(lat2), Math.cos(dist) - Math.sin(lat) * Math.sin(lat2)))];
-            }
-            var iconStyle = new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 20,
-                    fill: new ol.style.Fill({
-                        color: [255, 204, 102, 1]
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: [255, 204, 102, 1],
-                        width: 2.5
-                    })
+        };
+        ol.inherits(app.RotateNorthControl, ol.control.Control);
+        // translater http://epsg.io/transform#s_srs=4326&t_srs=3857&x=-93.0094689&y=45.0841489
+        const WhiteBear = [-93.0094688, 45.08414884]; // note api has it long/lat
+        const scaleLineControl = new ol.control.ScaleLine();
+
+        var CurrentLoc = WhiteBear; // expect a long list
+        console.info('loc ', CurrentLoc);
+        var vectorSource = new ol.source.Vector({});
+        var VL = new ol.layer.Vector({
+            title: 'added Layer',
+            source: new ol.source.Vector({
+                url: 'C:\maps\large.geojson',
+                format: new ol.format.GeoJSON()
+            })
+        })
+        const view = new ol.View({
+            center: ol.proj.fromLonLat(CurrentLoc),
+            zoom: 13,
+            rotation: 1
+        });
+        // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too
+        function destination(lat, lng, dist, heading) {
+            lat *= Math.PI / 180;
+            lng *= Math.PI / 180;
+            heading *= Math.PI / 180;
+
+            var lat2 = Math.asin(Math.sin(lat) * Math.cos(dist) +
+                Math.cos(lat) * Math.sin(dist) * Math.cos(heading));
+            return [180 / Math.PI * lat2, 180 / Math.PI * (lng + Math.atan2(Math.sin(heading) * Math.sin(dist) * Math.cos(lat2), Math.cos(dist) - Math.sin(lat) * Math.sin(lat2)))];
+        }
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 20,
+                fill: new ol.style.Fill({
+                    color: [255, 204, 102, 1]
                 }),
-                zIndex: 1
-            });
-            var p1 = new LatLon(45.0846885, -93.0099398); // Latitude: 45.0846885    Longitude: -93.0099398
-            var p1a = p1.destinationPoint(3000, 0.2); // will need to convert coords
-            var p2 = p1a.destinationPoint(1000, 0.0983); // will need to convert coords
-            //console.info('xxxcords ', p1, p2, p3);
-            tile_layer = new ol.layer.Tile({
-                source: new ol.source.XYZ({
-                    //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
-                    url: '/maps/mn2/{z}/{x}/{y}.png'
+                stroke: new ol.style.Stroke({
+                    color: [255, 204, 102, 1],
+                    width: 2.5
                 })
+            }),
+            zIndex: 1
+        });
+        var p1 = new LatLon(45.0846885, -93.0099398); // Latitude: 45.0846885    Longitude: -93.0099398
+        var p1a = p1.destinationPoint(3000, 0.2); // will need to convert coords
+        var p2 = p1a.destinationPoint(1000, 0.0983); // will need to convert coords
+        //console.info('xxxcords ', p1, p2, p3);
+        tile_layer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                //url: './theNewFolderThatWillBeCreated7/{z}/{x}/{y}.png'
+                url: '/maps/mn2/{z}/{x}/{y}.png'
             })
-            var map = new ol.Map({
-                target: 'mapDIV',
-                controls: ol.control.defaults({
-                    attributionOptions: {
-                        collapsible: false
-                    }
-                }).extend([
-                    new app.RotateNorthControl(),
-                    scaleLineControl
-                ]),
-                layers: [
-                    tile_layer
-                ],
-                view: view
-            });
-            var pos;
-            var point_feature = new ol.Feature({
-                geometry: new ol.geom.Point(ol.proj.fromLonLat([p1a.lon, p1a.lat]))
-            });
-            var linestring_feature = new ol.Feature({
-                geometry: new ol.geom.LineString(
-                    [ol.proj.fromLonLat([p1a.lon, p1a.lat]), ol.proj.fromLonLat([p2.lon, p2.lat])]
-                )
-            });
-            var vector_layer = new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    features: [point_feature, linestring_feature]
-                })
+        })
+        var map = new ol.Map({
+            target: 'mapDIV',
+            controls: ol.control.defaults({
+                attributionOptions: {
+                    collapsible: false
+                }
+            }).extend([
+                new app.RotateNorthControl(),
+                scaleLineControl
+            ]),
+            layers: [
+                tile_layer
+            ],
+            view: view
+        });
+        var pos;
+        var point_feature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([p1a.lon, p1a.lat]))
+        });
+        var linestring_feature = new ol.Feature({
+            geometry: new ol.geom.LineString(
+                [ol.proj.fromLonLat([p1a.lon, p1a.lat]), ol.proj.fromLonLat([p2.lon, p2.lat])]
+            )
+        });
+        var vector_layer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [point_feature, linestring_feature]
             })
-            map.addLayer(vector_layer);
-            //map.removeLayer(vector_layer);
+        })
+        map.addLayer(vector_layer);
+        //map.removeLayer(vector_layer);
 
-            var fill = new ol.style.Fill({
-                color: [180, 0, 0, 0.3]
-            });
+        var fill = new ol.style.Fill({
+            color: [180, 0, 0, 0.3]
+        });
 
-            var stroke = new ol.style.Stroke({
-                color: [180, 0, 0, 1],
-                width: 1
-            });
-            var style = new ol.style.Style({
-                image: new ol.style.Circle({
-                    fill: fill,
-                    stroke: stroke,
-                    radius: 8
-                }),
+        var stroke = new ol.style.Stroke({
+            color: [180, 0, 0, 1],
+            width: 1
+        });
+        var style = new ol.style.Style({
+            image: new ol.style.Circle({
                 fill: fill,
-                stroke: stroke
-            });
-            vector_layer.setStyle(style);
+                stroke: stroke,
+                radius: 8
+            }),
+            fill: fill,
+            stroke: stroke
+        });
+        vector_layer.setStyle(style);
 
-            const geolocation = new ol.Geolocation({
-                // enableHighAccuracy must be set to true to have the heading value.
-                trackingOptions: {
-                    enableHighAccuracy: true
-                },
-                tracking: true,
-                projection: view.getProjection()
-            });
-            function el(id) {
-                return document.getElementById(id);
-            }
+        const geolocation = new ol.Geolocation({
+            // enableHighAccuracy must be set to true to have the heading value.
+            trackingOptions: {
+                enableHighAccuracy: true
+            },
+            tracking: true,
+            projection: view.getProjection()
+        });
+        function el(id) {
+            return document.getElementById(id);
+        }
 
-            el('track').addEventListener('change', function () {
-                console.info('track change ');
-                geolocation.setTracking(this.checked);
-            });
-            // update the HTML page when the position changes.
-            geolocation.on('change', function () {
-                console.info('geo change');
-                el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
-                el('altitude').innerText = geolocation.getAltitude() + ' [m]';
-                el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
-                el('heading').innerText = geolocation.getHeading() + ' [rad]';
-                el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
-            });
-            // handle geolocation error.
-            geolocation.on('error', function (error) {
-                console.info('error ', error);
-                const info = document.getElementById('info');
-                info.innerHTML = error.message;
-                info.style.display = '';
-            });
-            geolocation.on('change', function (evt) {
-                //save position and set map center
-                pos = geolocation.getPosition();
-                console.info('pos ', pos);
-                map.getView().setCenter(pos);
+        el('track').addEventListener('change', function () {
+            console.info('track change ');
+            geolocation.setTracking(this.checked);
+        });
+        // update the HTML page when the position changes.
+        geolocation.on('change', function () {
+            console.info('geo change');
+            el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+            el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+            el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+            el('heading').innerText = geolocation.getHeading() + ' [rad]';
+            el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
+        });
+        // handle geolocation error.
+        geolocation.on('error', function (error) {
+            console.info('error ', error);
+            const info = document.getElementById('info');
+            info.innerHTML = error.message;
+            info.style.display = '';
+        });
+        geolocation.on('change', function (evt) {
+            //save position and set map center
+            pos = geolocation.getPosition();
+            console.info('pos ', pos);
+            map.getView().setCenter(pos);
 
-                //create icon at new map center
-                var iconFeature = new ol.Feature({
-                    geometry: new ol.geom.Point(pos)
-                });
+            //create icon at new map center
+            var iconFeature = new ol.Feature({
+                geometry: new ol.geom.Point(pos)
+            });
 
-                //add icon to vector source
-                vectorSource.addFeature(iconFeature);
-            });
-            const accuracyFeature = new ol.Feature();
-            geolocation.on('change:accuracyGeometry', function () {
-                console.info('change:accuracyGeometry');
-                accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
-            });
-            const positionFeature = new ol.Feature();
-            positionFeature.setStyle(new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 6,
-                    fill: new ol.style.Fill({
-                        color: 'rgba(255,0,0,0.8)'
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: 'rgba(0,255,0,0.8)',
-                        width: 2
-                    })
+            //add icon to vector source
+            vectorSource.addFeature(iconFeature);
+        });
+        const accuracyFeature = new ol.Feature();
+        geolocation.on('change:accuracyGeometry', function () {
+            console.info('change:accuracyGeometry');
+            accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+        });
+        const positionFeature = new ol.Feature();
+        positionFeature.setStyle(new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 6,
+                fill: new ol.style.Fill({
+                    color: 'rgba(255,0,0,0.8)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(0,255,0,0.8)',
+                    width: 2
                 })
-            }));
-            geolocation.on('change:position', function () {
-                const coordinates = geolocation.getPosition();
-                positionFeature.setGeometry(coordinates ?
-                    new ol.geom.Point(coordinates) : null);
-            });
-            new ol.layer.Vector({
-                map: map,
-                source: new ol.source.Vector({
-                    features: [accuracyFeature, positionFeature]
-                })
-            });
-            var vectorSource2 = new ol.source.Vector({
-                format: new ol.format.GeoJSON(),
-                loader: function (extent, resolution, projection) {
-                    var proj = projection.getCode();
-                    var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
-                        'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-                        'outputFormat=application/json&srsname=' + proj + '&' +
-                        'bbox=' + extent.join(',') + ',' + proj;
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', url);
-                    var onError = function () {
-                        vectorSource.removeLoadedExtent(extent);
-                    }
-                    xhr.onerror = onError;
-                    xhr.onload = function () {
-                        if (xhr.status == 200) {
-                            vectorSource.addFeatures(
-                                vectorSource.getFormat().readFeatures(xhr.responseText));
-                        } else {
-                            onError();
-                        }
-                    }
-                    xhr.send();
-                },
-                strategy: ol.loadingstrategy.bbox
-            });
-            const unitsSelect = document.getElementById('units');
-            function onChange() {
-                scaleLineControl.setUnits(unitsSelect.value);
-            }
-            unitsSelect.addEventListener('change', onChange);
-            onChange();
-        </script>
-        <script>
-            if (!Array.prototype.forEach) {
-                Array.prototype.forEach = function (cb) {
-                    var i = 0, s = this.length;
-                    for (; i < s; i++) {
-                        cb && cb(this[i], i, this);
+            })
+        }));
+        geolocation.on('change:position', function () {
+            const coordinates = geolocation.getPosition();
+            positionFeature.setGeometry(coordinates ?
+                new ol.geom.Point(coordinates) : null);
+        });
+        new ol.layer.Vector({
+            map: map,
+            source: new ol.source.Vector({
+                features: [accuracyFeature, positionFeature]
+            })
+        });
+        var vectorSource2 = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            loader: function (extent, resolution, projection) {
+                var proj = projection.getCode();
+                var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
+                    'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
+                    'outputFormat=application/json&srsname=' + proj + '&' +
+                    'bbox=' + extent.join(',') + ',' + proj;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                var onError = function () {
+                    vectorSource.removeLoadedExtent(extent);
+                }
+                xhr.onerror = onError;
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
+                        vectorSource.addFeatures(
+                            vectorSource.getFormat().readFeatures(xhr.responseText));
+                    } else {
+                        onError();
                     }
                 }
+                xhr.send();
+            },
+            strategy: ol.loadingstrategy.bbox
+        });
+        const unitsSelect = document.getElementById('units');
+        function onChange() {
+            scaleLineControl.setUnits(unitsSelect.value);
+        }
+        unitsSelect.addEventListener('change', onChange);
+        onChange();
+    </script>
+    <script>
+        if (!Array.prototype.forEach) {
+            Array.prototype.forEach = function (cb) {
+                var i = 0, s = this.length;
+                for (; i < s; i++) {
+                    cb && cb(this[i], i, this);
+                }
             }
-            document.fonts && document.fonts.forEach(function (font) {
-                font.loaded.then(function () {
-                    if (font.family.match(/Led/)) {
-                        document.gauges.forEach(function (gauge) {
-                            gauge.update();
-                        });
-                    }
-                });
+        }
+        document.fonts && document.fonts.forEach(function (font) {
+            font.loaded.then(function () {
+                if (font.family.match(/Led/)) {
+                    document.gauges.forEach(function (gauge) {
+                        gauge.update();
+                    });
+                }
             });
-            var timers = [];
-            function animateGauges() {
+        });
+    </script>
+    <script>
+        Math.seed = 6;
+        Math.seededRandom = function (max, min) {
+            max = max || 1;
+            min = min || 0;
 
-                document.gauges.forEach(function (gauge) {
-                    timers.push(setInterval(function () {
-                        var min = gauge.options.minValue - 20;
-                        var max = gauge.options.maxValue + 20;
-                        gauge.value = min + Math.random() * (max - min);
-                    }, gauge.animation.duration + 50));
-                });
-            }
-            function stopGaugesAnimation() {
-                timers.forEach(function (timer) {
-                    clearInterval(timer);
-                });
-            }
-        </script>
-        <script>
-            Math.seed = 6;
-            Math.seededRandom = function (max, min) {
-                max = max || 1;
-                min = min || 0;
+            Math.seed = (Math.seed * 9301 + 49297) % 233280;
+            var rnd = Math.seed / 233280;
 
-                Math.seed = (Math.seed * 9301 + 49297) % 233280;
-                var rnd = Math.seed / 233280;
-
-                return min + rnd * (max - min);
-            }
-            window.chartColors = {
-                red: 'rgb(255, 99, 132)',
-                orange: 'rgb(255, 159, 64)',
-                yellow: 'rgb(255, 205, 86)',
-                green: 'rgb(75, 192, 192)',
-                blue: 'rgb(54, 162, 235)',
-                purple: 'rgb(153, 102, 255)',
-                grey: 'rgb(201, 203, 207)'
-            };
-            var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            var config = {
-                type: 'line',
-                data: {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
-                    datasets: [{
-                        label: "Wind History",
-                        backgroundColor: window.chartColors.red,
-                        borderColor: window.chartColors.red,
-                        data: [
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom()),
-                            Math.round(Math.seededRandom())
-                        ],
-                        fill: false
-                    }]
+            return min + rnd * (max - min);
+        }
+        window.chartColors = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var config = {
+            type: 'line',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "Wind History",
+                    backgroundColor: window.chartColors.red,
+                    borderColor: window.chartColors.red,
+                    data: [
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom()),
+                        Math.round(Math.seededRandom())
+                    ],
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'FUMI Wind'
                 },
-                options: {
-                    responsive: true,
-                    title: {
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
                         display: true,
-                        text: 'FUMI Wind'
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true
-                    },
-                    scales: {
-                        xAxes: [{
+                        scaleLabel: {
                             display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Time'
-                            }
-                        }],
-                        yAxes: [{
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
                             display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'KPH'
-                            }
-                        }]
-                    }
+                            labelString: 'KPH'
+                        }
+                    }]
                 }
-            };
-            window.onload = function () {
-                // var ctx = document.getElementById("canvas").getContext("2d");
-                // window.myLine = new Chart(ctx, config);
-                // var ctx = document.getElementById("canvas2").getContext("2d");
-                // window.myLine = new Chart(ctx, config);
-            };
-            //document.getElementById('randomizeData').addEventListener('click', function () {
-            //  config.data.datasets.forEach(function (dataset) {
-            //    dataset.data = dataset.data.map(function () {
-            //      return randomScalingFactor();
-            // });
-            //});
-            // window.myLine.update();
-            // });
-            var colorNames = Object.keys(window.chartColors);
-            //document.getElementById('addDataset').addEventListener('click', function () {
-            //  var colorName = colorNames[config.data.datasets.length % colorNames.length];
-            //var newColor = window.chartColors[colorName];
-            //var newDataset = {
-            //   label: 'Dataset ' + config.data.datasets.length,
-            //  backgroundColor: newColor,
-            // borderColor: newColor,
-            //data: [],
-            //fill: false
-            //};
-            //for (var index = 0; index < config.data.labels.length; ++index) {
-            //  newDataset.data.push(randomScalingFactor());
-            // }
-            //config.data.datasets.push(newDataset);
-            //window.myLine.update();
-            //});
-            //document.getElementById('addData').addEventListener('click', function () {
-            //  if (config.data.datasets.length > 0) {
-            //    var month = MONTHS[config.data.labels.length % MONTHS.length];
-            //  config.data.labels.push(month);
-            ///config.data.datasets.forEach(function (dataset) {
-            // dataset.data.push(randomScalingFactor());
-            //});
-            //window.myLine.update();
-            // }
-            //});
-        </script>
-        <script>
-            //$('.odometer').html(123) // with jQuery
-            //http://blog.teamtreehouse.com/an-introduction-to-websockets
-            // Get references to elements on the page.
-            var form = document.getElementById('message-form');
-            var messageField = document.getElementById('message');
-            var messagesList = document.getElementById('messages');
-            var socketStatus = document.getElementById('status');
-            var closeBtn = document.getElementById('close');
-            var openBtn = document.getElementById('open');
-            // Create a new WebSocket. // ws://echo.websocket.org http://127.0.0.1:8000
-            var socket = new WebSocket('ws://127.0.0.1:8000');
-            // Show a connected message when the WebSocket is opened.
-            socket.onopen = function (event) {
-                socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
-                socketStatus.className = 'open';
-            };
-            // Handle any errors that occur.
-            socket.onerror = function (error) {
-                console.log('WebSocket Error: ' + error);
-            };
+            }
+        };
+        window.onload = function () {
+            // var ctx = document.getElementById("canvas").getContext("2d");
+            // window.myLine = new Chart(ctx, config);
+            var ctx = document.getElementById("graph-id").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+        };
+        //document.getElementById('randomizeData').addEventListener('click', function () {
+        //  config.data.datasets.forEach(function (dataset) {
+        //    dataset.data = dataset.data.map(function () {
+        //      return randomScalingFactor();
+        // });
+        //});
+        // window.myLine.update();
+        // });
+        var colorNames = Object.keys(window.chartColors);
+        //document.getElementById('addDataset').addEventListener('click', function () {
+        //  var colorName = colorNames[config.data.datasets.length % colorNames.length];
+        //var newColor = window.chartColors[colorName];
+        //var newDataset = {
+        //   label: 'Dataset ' + config.data.datasets.length,
+        //  backgroundColor: newColor,
+        // borderColor: newColor,
+        //data: [],
+        //fill: false
+        //};
+        //for (var index = 0; index < config.data.labels.length; ++index) {
+        //  newDataset.data.push(randomScalingFactor());
+        // }
+        //config.data.datasets.push(newDataset);
+        //window.myLine.update();
+        //});
+        //document.getElementById('addData').addEventListener('click', function () {
+        //  if (config.data.datasets.length > 0) {
+        //    var month = MONTHS[config.data.labels.length % MONTHS.length];
+        //  config.data.labels.push(month);
+        ///config.data.datasets.forEach(function (dataset) {
+        // dataset.data.push(randomScalingFactor());
+        //});
+        //window.myLine.update();
+        // }
+        //});
+    </script>
+    <script>
+        //$('.odometer').html(123) // with jQuery
+        //http://blog.teamtreehouse.com/an-introduction-to-websockets
+        // Get references to elements on the page.
+        var form = document.getElementById('message-form');
+        var messageField = document.getElementById('message');
+        var messagesList = document.getElementById('messages');
+        var socketStatus = document.getElementById('status');
+        var closeBtn = document.getElementById('close');
+        var openBtn = document.getElementById('open');
+        // Create a new WebSocket. // ws://echo.websocket.org http://127.0.0.1:8000
+        var socket = new WebSocket('ws://127.0.0.1:8000');
+        // Show a connected message when the WebSocket is opened.
+        socket.onopen = function (event) {
+            socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
+            socketStatus.className = 'open';
+        };
+        // Handle any errors that occur.
+        socket.onerror = function (error) {
+            console.log('WebSocket Error: ' + error);
+        };
 
-            //var odo = document.getElementByClass('.odometer');
-            // Send a message when the form is submitted.
-            form.onsubmit = function (e) {
-                e.preventDefault();
-                var msg = {
-                    type: "message",
-                    text: document.getElementById("message").value,
-                    id: 1
-                };
-                socket.send(JSON.stringify(msg));
-                // Retrieve the message from the textarea.
-                //var message = messageField.value;
-
-                // Send the message through the WebSocket.
-                //socket.send(message);
-
-                // Add the message to the messages list.
-                messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +
-                    '</li>';
-
-                // Clear out the message field.
-                messageField.value = '';
-
-                return false;
+        //var odo = document.getElementByClass('.odometer');
+        // Send a message when the form is submitted.
+        form.onsubmit = function (e) {
+            e.preventDefault();
+            var msg = {
+                type: "message",
+                text: document.getElementById("message").value,
+                id: 1
             };
+            socket.send(JSON.stringify(msg));
+            // Retrieve the message from the textarea.
+            //var message = messageField.value;
 
-            // Close the WebSocket connection when the close button is clicked.
-            closeBtn.onclick = function (e) {
-                e.preventDefault();
+            // Send the message through the WebSocket.
+            //socket.send(message);
 
-                // Close the WebSocket.
-                socket.close();
+            // Add the message to the messages list.
+            messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +
+                '</li>';
 
-                return false;
-            };
-            openBtn.onclick = function (e) {
-                e.preventDefault();
+            // Clear out the message field.
+            messageField.value = '';
 
-                return false;
-            };
-            // Show a disconnected message when the WebSocket is closed.
-            socket.onclose = function (event) {
-                socketStatus.innerHTML = 'Disconnected from WebSocket.';
-                socketStatus.className = 'closed';
-            };
-            // Handle messages sent by the server.
-            socket.onmessage = function (event) {
-                console.info('direction ', event.data);
-                var myObj = JSON.parse(event.data);
-                console.info('direction2 ', myObj.direction);
-                var speedGauge = document.gauges.get('WindSpeedGauge-id');
-                speedGauge.value = myObj.speed;
-                var directionGauge = document.gauges.get('WindDirectionGauge-id');
-                directionGauge.value = myObj.direction;
-            };
-        </script>
+            return false;
+        };
+
+        // Close the WebSocket connection when the close button is clicked.
+        closeBtn.onclick = function (e) {
+            e.preventDefault();
+
+            // Close the WebSocket.
+            socket.close();
+
+            return false;
+        };
+        openBtn.onclick = function (e) {
+            e.preventDefault();
+
+            return false;
+        };
+        // Show a disconnected message when the WebSocket is closed.
+        socket.onclose = function (event) {
+            socketStatus.innerHTML = 'Disconnected from WebSocket.';
+            socketStatus.className = 'closed';
+        };
+        // Handle messages sent by the server.
+        socket.onmessage = function (event) {
+            console.info('direction ', event.data);
+            var myObj = JSON.parse(event.data);
+            console.info('direction2 ', myObj.direction);
+            var speedGauge = document.gauges.get('WindSpeedGauge-id');
+            speedGauge.value = myObj.speed;
+            var directionGauge = document.gauges.get('WindDirectionGauge-id');
+            directionGauge.value = myObj.direction;
+        };
+    </script>
 </body>
 </html>

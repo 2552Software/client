@@ -50,19 +50,23 @@
 
     <div class="container-fluid">
         <div class="row justify-content-md-center">
-            <div class="col-md-10">
+            <div class="col-md-8">
                 <div class="well" data-toggle="modal" data-target="#ModalConfig">
-                    <div id="mapDIV" class="map w-100 h-100"></div>
+                    <div id="mapDIV" class="map w-100 h-100">
+
+                    </div>
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="well d-flex justify-content-center">
+                <div class="well d-flex align-items-start flex-column">
                     <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalPhotos">Photo Finish</button>
                     <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalConfig">Configuration</button>
                     <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalHistory">History</button>
                 </div>
+                <div class="w-75 h-75" id="wind-rose"></div>
+            </div>
+            <div class="col-md-2">
                 <div class="d-none d-sm-block center-block">
-                    <div class="w-75 h-75" id="wind-rose"></div>
                     <canvas class="w-75 h-75" data-toggle="modal" data-target="#ModalHistory" id="WindDirectionGauge-id"></canvas>
                     <canvas data-toggle="modal" data-target="#ModalHistory" class="w-75 h-75" id="WindSpeedGauge-id"></canvas>
                     <!-- Modals -->
@@ -125,83 +129,85 @@
 
             </div>
         </div>
-        <div class="row justify-content-md-center">
-            <div class="col-md-12">
-                <div class="w-100 h-100" id="wind-barb">
+            <div class="row justify-content-md-center">
+                <div class="col-md-12">
+                    <div class="w-100 h-100" id="wind-barb">
+                    </div>
+                    <div class="w-100 h-100" id="wind-speed">
+                    </div>
                 </div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col-md-12">
+
+                    <div id="info" style="display: none;"></div>
+                    <label for="track">
+                        track position
+                        <input id="track" type="checkbox" />
+                    </label>
+                    <p>
+                        position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
+                        altitude : <code id="altitude"></code>&nbsp;&nbsp;
+                        altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
+                        heading : <code id="heading"></code>&nbsp;&nbsp;
+                        speed : <code id="speed"></code>
+                    </p>
+                    <select id="units">
+                        <option value="degrees">degrees</option>
+                        <option value="imperial">imperial inch</option>
+                        <option value="us">us inch</option>
+                        <option value="nautical">nautical mile</option>
+                        <option value="metric" selected>metric</option>
+                    </select>
+                </div>
+                <ul id="messages"></ul>
+                <form id="message-form" action="#" method="post">
+                    <textarea id="message" placeholder="Write your message here..." required></textarea>
+                    <button type="submit">Send Message</button>
+                    <button type="button" id="close">Close Connection</button>
+                    <button type="button" id="open">Open Connection</button>
+                </form>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">@example.com</span>
+                    </div>
+                </div>
+
+                <label for="basic-url">Your vanity URL</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+                    </div>
+                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <div class="input-group-append">
+                        <span class="input-group-text">.00</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">With textarea</span>
+                    </div>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
+
             </div>
         </div>
-        <div class="row justify-content-md-center">
-            <div class="col-md-12">
-
-                <div id="info" style="display: none;"></div>
-                <label for="track">
-                    track position
-                    <input id="track" type="checkbox" />
-                </label>
-                <p>
-                    position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
-                    altitude : <code id="altitude"></code>&nbsp;&nbsp;
-                    altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
-                    heading : <code id="heading"></code>&nbsp;&nbsp;
-                    speed : <code id="speed"></code>
-                </p>
-                <select id="units">
-                    <option value="degrees">degrees</option>
-                    <option value="imperial">imperial inch</option>
-                    <option value="us">us inch</option>
-                    <option value="nautical">nautical mile</option>
-                    <option value="metric" selected>metric</option>
-                </select>
-            </div>
-            <ul id="messages"></ul>
-            <form id="message-form" action="#" method="post">
-                <textarea id="message" placeholder="Write your message here..." required></textarea>
-                <button type="submit">Send Message</button>
-                <button type="button" id="close">Close Connection</button>
-                <button type="button" id="open">Open Connection</button>
-            </form>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">@</span>
-                </div>
-                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-            </div>
-
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">@example.com</span>
-                </div>
-            </div>
-
-            <label for="basic-url">Your vanity URL</label>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
-                </div>
-                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-            </div>
-
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">$</span>
-                </div>
-                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                <div class="input-group-append">
-                    <span class="input-group-text">.00</span>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">With textarea</span>
-                </div>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
-            </div>
-
-        </div>
-    </div>
     </div>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -779,6 +785,7 @@
 */
             var rose; // globals
             var windBarb;
+            var windSpeeds;
             $(document).ready(function () {
                 //var categories = ["0", "45", "90", "135", "180", "225", "270", "315"];
                 var categories = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
@@ -894,67 +901,17 @@
 
                     series: [{
                         type: 'windbarb',
-                        data: [
-                            [9.8, 177.9],
-                            [10.1, 177.2],
-                            [11.3, 179.7],
-                            [10.9, 175.5],
-                            [9.3, 159.9],
-                            [8.8, 159.6],
-                            [7.8, 162.6],
-                            [5.6, 186.2],
-                            [6.8, 146.0],
-                            [6.4, 139.9],
-                            [3.1, 180.2],
-                            [4.3, 177.6],
-                            [5.3, 191.8],
-                            [6.3, 173.1],
-                            [7.7, 140.2],
-                            [8.5, 136.1],
-                            [9.4, 142.9],
-                            [10.0, 140.4],
-                            [5.3, 142.1],
-                            [3.8, 141.0],
-                            [3.3, 116.5],
-                            [1.5, 327.5],
-                            [0.1, 1.1],
-                            [1.2, 11.1]
-                        ],
-                        name: 'Wind',
+                        data: [],
+                        name: 'Wind Direction',
                         color: Highcharts.getOptions().colors[1],
-                        showInLegend: false,
+                        showInLegend: true,
                         tooltip: {
                             valueSuffix: ' m/s'
                         }
                     }, {
                         type: 'area',
                         keys: ['y', 'rotation'], // rotation is not used here
-                        data: [
-                            [9.8, 177.9],
-                            [10.1, 177.2],
-                            [11.3, 179.7],
-                            [10.9, 175.5],
-                            [9.3, 159.9],
-                            [8.8, 159.6],
-                            [7.8, 162.6],
-                            [5.6, 186.2],
-                            [6.8, 146.0],
-                            [6.4, 139.9],
-                            [3.1, 180.2],
-                            [4.3, 177.6],
-                            [5.3, 191.8],
-                            [6.3, 173.1],
-                            [7.7, 140.2],
-                            [8.5, 136.1],
-                            [9.4, 142.9],
-                            [10.0, 140.4],
-                            [5.3, 142.1],
-                            [3.8, 141.0],
-                            [3.3, 116.5],
-                            [1.5, 327.5],
-                            [0.1, 1.1],
-                            [1.2, 11.1]
-                        ],
+                        data: [],
                         color: Highcharts.getOptions().colors[0],
                         fillColor: {
                             linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
@@ -973,6 +930,62 @@
                         }
                     }]
 
+                });
+                windSpeeds = Highcharts.chart( {
+                    chart: {
+                        zoomType: 'x',
+                        renderTo: 'wind-speed',
+                    },
+                    title: {
+                        text: 'USD to EUR exchange rate over time'
+                    },
+                    subtitle: {
+                        text: document.ontouchstart === undefined ?
+                            'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Exchange rate'
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        area: {
+                            fillColor: {
+                                linearGradient: {
+                                    x1: 0,
+                                    y1: 0,
+                                    x2: 0,
+                                    y2: 1
+                                },
+                                stops: [
+                                    [0, Highcharts.getOptions().colors[0]],
+                                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                ]
+                            },
+                            marker: {
+                                radius: 2
+                            },
+                            lineWidth: 1,
+                            states: {
+                                hover: {
+                                    lineWidth: 1
+                                }
+                            },
+                            threshold: null
+                        }
+                    },
+
+                    series: [{
+                        type: 'area',
+                        name: 'USD to EUR',
+                        data: []
+                    }]
                 });
             });
 
@@ -1004,6 +1017,8 @@ y: 5
                 */
                 //chart.series[0].setData(data); then keep the largest? or keep all data? not sure
                 rose.series[0].addPoint([myObj.direction, myObj.speed], true);
+                windBarb.series[0].addPoint([myObj.speed, myObj.direction], true);
+                windBarb.series[1].addPoint([myObj.speed, myObj.direction], true);
             };
         </script>
 </body>

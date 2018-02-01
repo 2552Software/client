@@ -54,6 +54,8 @@
             <div class="col-md-1">
                 <div class="d-none d-sm-block well-sm center-block" data-toggle="modal" data-target="#exampleModal">
                     <canvas id="WindDirectionGauge-id"></canvas>
+                    <a href="#" class="badge badge-primary">History</a>
+                    <canvas id="graph-id3"></canvas>
                     <h2>put wind rose here</h2>
                     <h2>gusts chart</h2>
                     <h2>baro pressure graph</h2>
@@ -80,6 +82,8 @@
                 </div>
                 <div data-toggle="popover" class="d-none d-sm-block center-block well-sm" data-content="Some content inside the popover">
                     <canvas id="WindSpeedGauge-id"></canvas>
+                    <a href="#" class="badge badge-primary">History</a>
+                    <canvas id="graph-id2"></canvas>
                 </div>
                 <div class="d-md-none dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -617,6 +621,10 @@
             // var ctx = document.getElementById("canvas").getContext("2d");
             // window.myLine = new Chart(ctx, config);
             var ctx = document.getElementById("graph-id").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+            var ctx = document.getElementById("graph-id2").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+            var ctx = document.getElementById("graph-id3").getContext("2d");
             window.myLine = new Chart(ctx, config);
         };
         //document.getElementById('randomizeData').addEventListener('click', function () {

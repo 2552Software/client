@@ -51,17 +51,33 @@
 
     <div class="container-fluid">
         <div class="row justify-content-md-center">
-            <div class="col-md-1">
-                <div class="d-none d-sm-block well-sm center-block" data-toggle="modal" data-target="#exampleModal">
-                    <canvas id="WindDirectionGauge-id"></canvas>
-                    <a href="#" class="badge badge-primary">History</a>
+            <div class="col-md-10">
+                <div class="well">
+                    <div id="mapDIV" class="map h-100"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="well d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalPhotos">Photo Finish</button>
+                    <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalConfig">Configuration</button>
+                    <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalHistory">History</button>
+                </div>
+
+                <div class="d-none d-sm-block well center-block" >
+                    <canvas class="w-100 h-100" data-toggle="modal" data-target="#ModalHistory" id="WindDirectionGauge-id"></canvas>
+
                     <canvas id="graph-id3"></canvas>
                     <h2>put wind rose here</h2>
                     <h2>gusts chart</h2>
                     <h2>baro pressure graph</h2>
                     <h2>others?</h2>
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div  class="d-none d-sm-block center-block well-sm">
+                        <canvas data-toggle="modal" data-target="#ModalHistory" class="w-100 h-100" id="WindSpeedGauge-id"></canvas>
+                        <canvas iclass="w-100 h-100" id="graph-id2"></canvas>
+                    </div>
+
+                    <!-- Modals -->
+                    <div class="modal fade" id="ModalHistory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -80,104 +96,115 @@
                         </div>
                     </div>
                 </div>
-                <div data-toggle="popover" class="d-none d-sm-block center-block well-sm" data-content="Some content inside the popover">
-                    <canvas id="WindSpeedGauge-id"></canvas>
-                    <a href="#" class="badge badge-primary">History</a>
-                    <canvas id="graph-id2"></canvas>
-                </div>
-                <div class="d-md-none dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                        Dropdown Example
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">HTML</a></li>
-                        <li><a href="#">CSS</a></li>
-                        <li><a href="#">JavaScript</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-9">
-                <div class="well">
-                    <div id="mapDIV" class="map"></div>
-                    <div id="info" style="display: none;"></div>
-                    <label for="track">
-                        track position
-                        <input id="track" type="checkbox" />
-                    </label>
-                    <p>
-                        position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
-                        altitude : <code id="altitude"></code>&nbsp;&nbsp;
-                        altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
-                        heading : <code id="heading"></code>&nbsp;&nbsp;
-                        speed : <code id="speed"></code>
-                    </p>
-                    <select id="units">
-                        <option value="degrees">degrees</option>
-                        <option value="imperial">imperial inch</option>
-                        <option value="us">us inch</option>
-                        <option value="nautical">nautical mile</option>
-                        <option value="metric" selected>metric</option>
-                    </select>
-                </div>
-                <ul id="messages"></ul>
-                <form id="message-form" action="#" method="post">
-                    <textarea id="message" placeholder="Write your message here..." required></textarea>
-                    <button type="submit">Send Message</button>
-                    <button type="button" id="close">Close Connection</button>
-                    <button type="button" id="open">Open Connection</button>
-                </form>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon2">@example.com</span>
+                <div class="modal fade" id="ModalPhotos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Photo Finish</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-md-4"><img class="center-block img-thumbnail" src="./pic00008.jpg" alt="..."></div>
+                                <div class="col-md-4"><img class="center-block img-thumbnail" src="./pic00008.jpg" alt="..."></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <label for="basic-url">Your vanity URL</label>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+                <div class="modal fade" id="ModalConfig" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Photo Finish</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                make forms here
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
                     </div>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">$</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                    <div class="input-group-append">
-                        <span class="input-group-text">.00</span>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">With textarea</span>
-                    </div>
-                    <textarea class="form-control" aria-label="With textarea"></textarea>
                 </div>
 
             </div>
-            <div class="col-md-2">
-                <div class="well-sm">
-                    <img class="center-block img-thumbnail" src="./pic00008.jpg" alt="...">
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-12">
+
+            <div id="info" style="display: none;"></div>
+            <label for="track">
+                track position
+                <input id="track" type="checkbox" />
+            </label>
+            <p>
+                position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
+                altitude : <code id="altitude"></code>&nbsp;&nbsp;
+                altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
+                heading : <code id="heading"></code>&nbsp;&nbsp;
+                speed : <code id="speed"></code>
+            </p>
+            <select id="units">
+                <option value="degrees">degrees</option>
+                <option value="imperial">imperial inch</option>
+                <option value="us">us inch</option>
+                <option value="nautical">nautical mile</option>
+                <option value="metric" selected>metric</option>
+            </select>
+        </div>
+            <ul id="messages"></ul>
+            <form id="message-form" action="#" method="post">
+                <textarea id="message" placeholder="Write your message here..." required></textarea>
+                <button type="submit">Send Message</button>
+                <button type="button" id="close">Close Connection</button>
+                <button type="button" id="open">Open Connection</button>
+            </form>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">@</span>
                 </div>
-                <div class="well-sm">
-                    <img class="center-block img-thumbnail" src="./pic00008.jpg" alt="...">
-                </div>
-                <div class="well-sm">
-                    <img class="center-block img-thumbnail" src="./pic00008.jpg" alt="...">
+                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">@example.com</span>
                 </div>
             </div>
+
+            <label for="basic-url">Your vanity URL</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+                </div>
+                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                    <span class="input-group-text">.00</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">With textarea</span>
+                </div>
+                <textarea class="form-control" aria-label="With textarea"></textarea>
+            </div>
+
         </div>
     </div>
  
@@ -331,7 +358,7 @@
         })
         const view = new ol.View({
             center: ol.proj.fromLonLat(CurrentLoc),
-            zoom: 13,
+            zoom: 14,
             rotation: 1
         });
         // http://www.movable-type.co.uk/scripts/latlong.html look at Sean's doc too

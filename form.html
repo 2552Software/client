@@ -51,19 +51,37 @@
     <div class="container-fluid">
         <div class="row justify-content-md-center">
             <div class="col-md-8">
-                <div class="well" data-toggle="modal" data-target="#ModalConfig">
+                <div class="well">
                     <div id="mapDIV" class="map w-100 h-100">
 
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="well d-flex align-items-start flex-column">
-                    <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalPhotos">Photo Finish</button>
-                    <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalConfig">Configuration</button>
-                    <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalHistory">History</button>
+                <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalPhotos">Photo Finish</button>
+                <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalConfig">Configuration</button>
+                <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalHistory">History</button>
+                <div  class="d-flex justify-content-start w-75 h-75" id="wind-rose">
+
                 </div>
-                <div class="w-75 h-75" id="wind-rose"></div>
+                <table class="table table-inverse">
+                    <thead>
+                        <tr>
+                            <th>Average Wind Speed</th>
+                            <th>Largest Gust</th>
+                            <th>Barometric Pressure</th>
+                            <th>Temapture</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div id="aveWindSpeed"></div></td>
+                            <td><div id="gust"></div></td>
+                            <td><div id="baro"></div></td>
+                            <td><div id="temp"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="col-md-2">
                 <div class="d-none d-sm-block center-block">
@@ -118,7 +136,78 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                make forms here
+                                <form>
+                                    <div class="form-row align-items-center">
+                                        <div class="col-7 my-1">
+                                            <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                                                <option selected>Class...</option>
+                                                <option value="1">X/MC</option>
+                                                <option value="2">420</option>
+                                                <option value="3">C</option>
+                                                <option value="3">E</option>
+                                                <option value="3">A</option>
+                                            </select>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect2">
+                                                <option selected>Number of Yachts...</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">99</option>
+                                            </select>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect3">
+                                                <option selected>Target Elapsed Time (Minutes)...></option>
+                                                <option value="1">30</option>
+                                                <option value="2">40</option>
+                                                <option value="3">45</option>
+                                                <option value="3">50</option>
+                                                <option value="3">55</option>
+                                                <option value="3">60</option>
+                                            </select>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect4">
+                                                <option selected>Course Type...></option>
+                                                <option value="1">NONE</option>
+                                                <option value="2">W1</option>
+                                                <option value="3">L1</option>
+                                                <option value="3">W2</option>
+                                                <option value="3">L2</option>
+                                                <option value="3">W3</option>
+                                                <option value="3">L3</option>
+                                                <option value="3">W4</option>
+                                                <option value="3">L4</option>
+                                                <option value="3">W5</option>
+                                                <option value="3">L5</option>
+                                            </select>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect4">
+                                                <option selected>Wind Range...></option>
+                                                <option value="1">5-8mph</option>
+                                                <option value="2">8-12mph</option>
+                                                <option value="3">12-15mph</option>
+                                                <option value="3">15-20mph</option>
+                                                <option value="3">Auto</option>
+                                            </select>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect4">
+                                                <option selected>Race BoatSet?...></option>
+                                                <option value="1">Yes</option>
+                                                <option value="2">Now</option>
+                                            </select>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect4">
+                                                <option selected>Is the Windward Mark Set?...></option>
+                                                <option value="1">Yes</option>
+                                                <option value="2">Now</option>
+                                            </select>
+                                        </div> 
+
+                                        <div class="col-auto my-1">
+                                            <div class="custom-control custom-checkbox mr-sm-2">
+                                                <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                                                <label class="custom-control-label" for="customControlAutosizing">Remember my preference</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto my-1">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -167,48 +256,9 @@
                     <button type="button" id="close">Close Connection</button>
                     <button type="button" id="open">Open Connection</button>
                 </form>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon2">@example.com</span>
-                    </div>
-                </div>
-
-                <label for="basic-url">Your vanity URL</label>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
-                    </div>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">$</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                    <div class="input-group-append">
-                        <span class="input-group-text">.00</span>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">With textarea</span>
-                    </div>
-                    <textarea class="form-control" aria-label="With textarea"></textarea>
-                </div>
 
             </div>
         </div>
-    </div>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -224,7 +274,6 @@
             $('#myModal').on('shown.bs.modal', function () {
                 $('#myInput').trigger('focus')
             });
-
             var gauge = new RadialGauge({
                 renderTo: 'WindDirectionGauge-id',
                 width: 200,
@@ -394,8 +443,8 @@
                 zIndex: 1
             });
             var p1 = new LatLon(45.0846885, -93.0099398); // Latitude: 45.0846885    Longitude: -93.0099398
-            var p1a = p1.destinationPoint(3000, 0.2); // will need to convert coords
-            var p2 = p1a.destinationPoint(1000, 0.0983); // will need to convert coords
+            var p1a = p1.destinationPoint(2500, 101.825); // will need to convert coords
+            var p2 = p1a.destinationPoint(1000, -0.1983); // will need to convert coords
             //console.info('xxxcords ', p1, p2, p3);
             tile_layer = new ol.layer.Tile({
                 source: new ol.source.XYZ({
@@ -403,6 +452,44 @@
                     url: '/maps/mn2/{z}/{x}/{y}.png'
                 })
             })
+            var source2 = new ol.source.Vector();
+
+            var styleFunction = function (feature) {
+                var geometry = feature.getGeometry();
+                var styles = [
+                    // linestring
+                    new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: '#ffcc33',
+                            width: 2
+                        })
+                    })
+                ];
+
+                geometry.forEachSegment(function (start, end) {
+                    var dx = end[0] - start[0];
+                    var dy = end[1] - start[1];
+                    var rotation = Math.atan2(dy, dx);
+                    // arrows
+                    styles.push(new ol.style.Style({
+                        geometry: new ol.geom.Point(end),
+                        image: new ol.style.Icon({
+                            src: 'https://openlayers.org/en/v4.6.4/examples/data/arrow.png',
+                            anchor: [0.75, 0.5],
+                            rotateWithView: true,
+                            rotation: -rotation
+                        })
+                    }));
+                });
+
+                return styles;
+            };
+            var vectorDraw = new ol.layer.Vector({
+                source: source2,
+                style: styleFunction
+            });
+
+
             var map = new ol.Map({
                 target: 'mapDIV',
                 controls: ol.control.defaults({
@@ -414,10 +501,15 @@
                     scaleLineControl
                 ]),
                 layers: [
-                    tile_layer
+                    tile_layer, vectorDraw
                 ],
                 view: view
             });
+            map.addInteraction(new ol.interaction.Draw({
+                source: source2,
+                type: 'LineString'
+            }));
+
             var pos;
             var point_feature = new ol.Feature({
                 geometry: new ol.geom.Point(ol.proj.fromLonLat([p1a.lon, p1a.lat]))
@@ -658,8 +750,8 @@
                 // window.myLine = new Chart(ctx, config);
                 var ctx = document.getElementById("graph-id").getContext("2d");
                 window.myLine = new Chart(ctx, config);
-                var ctx = document.getElementById("graph-id2").getContext("2d");
-                window.myLine = new Chart(ctx, config);
+                //var ctx = document.getElementById("graph-id2").getContext("2d");
+                //window.myLine = new Chart(ctx, config);
                 // var ctx = document.getElementById("graph-id3").getContext("2d");
                 //window.myLine = new Chart(ctx, config);
                 //var ctx = document.getElementById("rose").getContext("2d");
@@ -888,14 +980,14 @@
                     },
 
                     xAxis: {
-                        type: 'datetime',
+                        type: 'linear',
                         offset: 40
                     },
 
                     plotOptions: {
                         series: {
-                            pointStart: Date.UTC(2017, 0, 29),
-                            pointInterval: 36e5
+                            pointStart: 0,
+                            pointInterval: 24 * 3600 * 1000
                         }
                     },
 
@@ -931,62 +1023,6 @@
                     }]
 
                 });
-                windSpeeds = Highcharts.chart( {
-                    chart: {
-                        zoomType: 'x',
-                        renderTo: 'wind-speed',
-                    },
-                    title: {
-                        text: 'USD to EUR exchange rate over time'
-                    },
-                    subtitle: {
-                        text: document.ontouchstart === undefined ?
-                            'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-                    },
-                    xAxis: {
-                        type: 'datetime'
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Exchange rate'
-                        }
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        area: {
-                            fillColor: {
-                                linearGradient: {
-                                    x1: 0,
-                                    y1: 0,
-                                    x2: 0,
-                                    y2: 1
-                                },
-                                stops: [
-                                    [0, Highcharts.getOptions().colors[0]],
-                                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                                ]
-                            },
-                            marker: {
-                                radius: 2
-                            },
-                            lineWidth: 1,
-                            states: {
-                                hover: {
-                                    lineWidth: 1
-                                }
-                            },
-                            threshold: null
-                        }
-                    },
-
-                    series: [{
-                        type: 'area',
-                        name: 'USD to EUR',
-                        data: []
-                    }]
-                });
             });
 
             // Handle messages sent by the server.
@@ -1019,6 +1055,11 @@ y: 5
                 rose.series[0].addPoint([myObj.direction, myObj.speed], true);
                 windBarb.series[0].addPoint([myObj.speed, myObj.direction], true);
                 windBarb.series[1].addPoint([myObj.speed, myObj.direction], true);
+                document.getElementById("aveWindSpeed").innerHTML = parseFloat((myObj.avespeed).toFixed(2));
+                document.getElementById("gust").innerHTML = parseFloat((myObj.gust).toFixed(2));
+                document.getElementById("baro").innerHTML = parseFloat(29.0).toFixed(2);
+                document.getElementById("temp").innerHTML = parseFloat(88.5).toFixed(2);
+                
             };
         </script>
 </body>

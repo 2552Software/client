@@ -60,7 +60,6 @@
             <div class="col-md-2">
                 <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalPhotos">Photo Finish</button>
                 <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalConfig">Configuration</button>
-                <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalHistory">History</button>
                 <div  class="d-flex justify-content-start w-75 h-75" id="wind-rose">
 
                 </div>
@@ -218,14 +217,6 @@
 
             </div>
         </div>
-            <div class="row justify-content-md-center">
-                <div class="col-md-12">
-                    <div class="w-100 h-100" id="wind-barb">
-                    </div>
-                    <div class="w-100 h-100" id="wind-speed">
-                    </div>
-                </div>
-            </div>
             <div class="row justify-content-md-center">
                 <div class="col-md-12">
 
@@ -442,9 +433,9 @@
                 }),
                 zIndex: 1
             });
-            var p1 = new LatLon(45.0846885, -93.0099398); // Latitude: 45.0846885    Longitude: -93.0099398
-            var p1a = p1.destinationPoint(2500, 101.825); // will need to convert coords
-            var p2 = p1a.destinationPoint(1000, -0.1983); // will need to convert coords
+            var p1 = new LatLon(45.076733, -92.995727); // Latitude: 45.0846885    Longitude: -93.0099398
+            var p1a = p1.destinationPoint(1, 101.825); // will need to convert coords
+            var p2 = p1a.destinationPoint(100, -0.1983); // will need to convert coords
             //console.info('xxxcords ', p1, p2, p3);
             tile_layer = new ol.layer.Tile({
                 source: new ol.source.XYZ({
@@ -588,7 +579,7 @@
                 var iconFeature = new ol.Feature({
                     geometry: new ol.geom.Point(pos)
                 });
-
+                console.info('Sean ', pos);
                 //add icon to vector source
                 vectorSource.addFeature(iconFeature);
             });
@@ -968,60 +959,6 @@
                             }
                         }]
                     }
-                });
-                windBarb = new Highcharts.chart({
-                    chart: {
-                        renderTo: 'wind-barb',
-                        windbarb: true
-                    },
-
-                    title: {
-                        text: ''
-                    },
-
-                    xAxis: {
-                        type: 'linear',
-                        offset: 40
-                    },
-
-                    plotOptions: {
-                        series: {
-                            pointStart: 0,
-                            pointInterval: 24 * 3600 * 1000
-                        }
-                    },
-
-                    series: [{
-                        type: 'windbarb',
-                        data: [],
-                        name: 'Wind Direction',
-                        color: Highcharts.getOptions().colors[1],
-                        showInLegend: true,
-                        tooltip: {
-                            valueSuffix: ' m/s'
-                        }
-                    }, {
-                        type: 'area',
-                        keys: ['y', 'rotation'], // rotation is not used here
-                        data: [],
-                        color: Highcharts.getOptions().colors[0],
-                        fillColor: {
-                            linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-                            stops: [
-                                [0, Highcharts.getOptions().colors[0]],
-                                [
-                                    1,
-                                    Highcharts.color(Highcharts.getOptions().colors[0])
-                                        .setOpacity(0.25).get()
-                                ]
-                            ]
-                        },
-                        name: 'Wind speed',
-                        tooltip: {
-                            valueSuffix: ' m/s'
-                        }
-                    }]
-
                 });
             });
 

@@ -51,24 +51,29 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-2 col-xl-2 ">
+            <div class="col-md-2 col-xl-2">
                 <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalPhotos">Photo Finish</button>
                 <button type="button" class="btn btn-outline-primary h4" data-toggle="modal" data-target="#ModalConfig">Configuration</button>
-                <label>Wind Direction:</label>
-                <input type="text" readonly id="windDirection" value="340">
-                <label>Wind Speed:</label>
-                <input type="text" readonly id="windSpeed" value="windSpeed">
+                <div>
+                    <label>Wind Direction:</label>
+                    <input type="text" readonly id="windDirection" value="340">
+                </div>
+                <div>
+                    <label>Wind Speed:</label>
+                    <input type="text" readonly id="windSpeed" value="windSpeed">
+                </div>
             </div>
             <div class="col-md-6 col-xl-6">
                 <div id="mapDIV" class="map"></div>
             </div>
             <div class="col-md-2 col-xl-2">
-                <div id="wind-rose" style="height: 200px"></div>
+                <div id="wind-rose"  style="height: 200px"></div>
                 <div id="wind-rose2" style="height: 200px"></div>
             </div>
-            <div class="col-md-2 col-xl-2">
-                <canvas id="WindDirectionGauge-id"></canvas>
-                <canvas id="WindSpeedGauge-id"></canvas>
+            <div class="col-md-2 col-xl-2>
+                https://github.com/pimterry/loglevel
+                <canvas class="mx-auto" id="WindDirectionGauge-id"></canvas>
+                <canvas class="mx-auto" id="WindSpeedGauge-id"></canvas>
             </div>
         </div>
     </div>
